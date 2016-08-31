@@ -36,8 +36,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
     StatusBar saturationBar;
     DataRepository repository;
     Context context;
-    ArrayList<StatusBar> statusBarArrayList = new ArrayList<StatusBar>();
-    public enum GameState{OUTSIDE,KITCHEN,PLAYROOM,BATH,STONEPAPER};
+    ArrayList<StatusBar> statusBarArrayList = new ArrayList<>();
+    public enum GameState{OUTSIDE,KITCHEN,PLAYROOM,BATH,STONEPAPER}
     GameState state =  GameState.PLAYROOM;
 
 
@@ -109,7 +109,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
         fridge = new Fridge(BitmapFactory.decodeResource(getResources(), R.drawable.fridge),(int)(200*resolutionControlFactor),(int)(230*resolutionControlFactor),1,getWidth(),getHeight());
 
-       // roomScroll = new RoomScroll(getWidth(),getHeight(),resolutionControlFactor,BitmapFactory.decodeResource(getResources(),R.drawable.kitchenbutton),BitmapFactory.decodeResource(getResources(),R.drawable.playroombutton),BitmapFactory.decodeResource(getResources(),R.drawable.outsidebutton),BitmapFactory.decodeResource(getResources(),R.drawable.bathbutton));
+        roomScroll = new RoomScroll(getWidth(),getHeight(),resolutionControlFactor,BitmapFactory.decodeResource(getResources(),R.drawable.kitchenbutton),BitmapFactory.decodeResource(getResources(),R.drawable.playroombutton),BitmapFactory.decodeResource(getResources(),R.drawable.outsidebutton),BitmapFactory.decodeResource(getResources(),R.drawable.bathbutton));
         roomScroll.scroll();
 
         //start gameloop
@@ -181,12 +181,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
     private void setCurrentBackground() {
         switch(state){
 
-            /*case KITCHEN: currentRoom = R.drawable.kitchen;break;
+            case KITCHEN: currentRoom = R.drawable.kitchen;break;
             case PLAYROOM: currentRoom = R.drawable.playroom;break;
             case STONEPAPER: currentRoom = R.drawable.playroom;Log.d("gamestateChanged", "new gameState: "+ 3);break;
             case BATH: currentRoom = R.drawable.kitchen;break;
             case OUTSIDE: currentRoom = R.drawable.kitchen;break;
-*/
+
         }
     }
 
