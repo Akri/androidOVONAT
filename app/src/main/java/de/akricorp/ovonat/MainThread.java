@@ -50,6 +50,7 @@ public class MainThread extends Thread {
                 synchronized (surfaceHolder){
 
                     this.gamePanel.update();
+
                     this.gamePanel.draw(canvas);
 
                 }

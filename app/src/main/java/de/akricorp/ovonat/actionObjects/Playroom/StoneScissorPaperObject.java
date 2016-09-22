@@ -1,4 +1,4 @@
-package de.akricorp.ovonat.actionObjects;
+package de.akricorp.ovonat.actionObjects.Playroom;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -8,19 +8,19 @@ import de.akricorp.ovonat.Animation;
 import de.akricorp.ovonat.GameObject;
 
 /**
- * Created by Hannes on 29.07.2015.
+ * Created by Hännes on 21.09.2016.
  */
-public class Fridge extends GameObject {
+
+public class StoneScissorPaperObject extends GameObject {
 
     Bitmap spritesheed;
     private Animation animation = new Animation();
 
-    public Fridge(Bitmap res, int w, int h, int numFrames,int canvasWidth, int canvasHeight,float resolutionControlfactor)
-    {super(canvasWidth,canvasHeight,resolutionControlfactor);
-        setX(20);
-        setY(20);
+    public StoneScissorPaperObject(Bitmap res, int w, int h, int numFrames,int positionX, int positionY,float resolutionControlFactor)
+    {super(positionX,positionY, resolutionControlFactor);
         height = h;
         width = w;
+        isShown = true;
 
         Bitmap[] image = new Bitmap[numFrames];
         spritesheed = res;
@@ -39,11 +39,15 @@ public class Fridge extends GameObject {
 
     public void update()
     {
-        animation.update();
+       if(isShown){ animation.update();}
     }
     public void draw(Canvas canvas)
-    {  Log.d("fridgePosition", "x: " + x + ", y: " + y);
-        canvas.drawBitmap(animation.getImage(), x, y, null);
+    {  if(isShown){
+
+
+
+
+        canvas.drawBitmap(animation.getImage(), x, y, null); }
 
     }
 
@@ -53,4 +57,3 @@ public class Fridge extends GameObject {
 
 
 }
-

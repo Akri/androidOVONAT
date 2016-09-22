@@ -2,6 +2,7 @@ package de.akricorp.ovonat;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.util.Log;
 
 
 /**
@@ -16,8 +17,8 @@ public class Player extends GameObject{
     private Animation eyesAnimation = new Animation();
     float resolutionControlFactor;
 
-    public Player(float resolutionControlFactor,Bitmap body, Bitmap eyes,int w, int h, int numFrames, int canvasWidth, int canvasHeight)
-    {super(canvasWidth,canvasHeight);
+    public Player(Bitmap body, Bitmap eyes,int w, int h, int numFrames, int positionX, int positionY,float resolutionControlFactor)
+    {super(positionX,positionY, resolutionControlFactor);
         originalX = x = 300;
         originalY = y= 150;
         height = h;
@@ -53,6 +54,7 @@ public class Player extends GameObject{
     }
     public void draw(Canvas canvas)
     {
+        Log.d("player gets Drawn", "true");
         canvas.drawBitmap(bodyAnimation.getImage(),x*resolutionControlFactor,y*resolutionControlFactor,null);
         canvas.drawBitmap(eyesAnimation.getImage(),x*resolutionControlFactor,y*resolutionControlFactor,null);
 

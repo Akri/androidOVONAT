@@ -13,17 +13,14 @@ public abstract class GameObject {
     public int y;
     protected int width;
     protected int height;
-    protected int savedX;
-    protected int savedY;
-    protected int savedHeight;
-    protected int savedWidth;
-    protected int canvasWidth;
-    protected int canvasHeight;
-    public float resolutionControlFactor;
 
-    public GameObject(int canvasWidth,int canvasHeight){
-        this.canvasHeight = canvasHeight;
-        this.canvasWidth = canvasWidth;
+
+    public boolean isShown;
+
+    public GameObject(int positionX,int positionY, float resolutionControlFactor){
+        this.originalX = positionX;
+        this.originalY = positionY;
+        scale(resolutionControlFactor);
 
     }
 
@@ -62,15 +59,21 @@ public abstract class GameObject {
     }
 
 
-    public void scale(int canvasWidth, int canvasHeight,int gameWidth,int gameHeight){
-
-    }
 
 
-    public void scale(int newCanvasHeight, int newCanvasWidth){
-        x= (int)((float)originalX*((float)canvasWidth/(float)newCanvasWidth));
-        y = (int)((float)originalY*((float)canvasHeight/(float)newCanvasHeight));
+    public void scale(float resolutionControlFactor){
+        x= (int)((float)originalX*resolutionControlFactor);
+        y = (int)((float)originalY*resolutionControlFactor);
+        Log.d("Positions",this.getClass() + ": x: " + x + ", y: " + y);
     }
 
     public void clickReaction(){}
+
+    public void hide(){
+        isShown = false;
+    }
+
+    public void show(){
+        isShown = true;
+    }
 }

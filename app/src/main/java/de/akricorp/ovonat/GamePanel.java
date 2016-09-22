@@ -5,15 +5,18 @@ import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.graphics.Canvas;
 import android.view.SurfaceView;
 
 import java.util.ArrayList;
 
-import de.akricorp.ovonat.actionObjects.Fridge;
-import de.akricorp.ovonat.actionObjects.RoomScroll;
+
+//import de.akricorp.ovonat.actionObjects.RoomScroll;
+import de.akricorp.ovonat.actionObjects.Playroom.StoneScissorPaperObject;
+import de.akricorp.ovonat.actionObjects.StonePaperScissor.Paper;
+import de.akricorp.ovonat.actionObjects.StonePaperScissor.Scissor;
+import de.akricorp.ovonat.actionObjects.StonePaperScissor.Stone;
 import de.akricorp.ovonat.repository.DataRepository;
 
 /**
@@ -27,9 +30,13 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
     public  int width = gameSettings.GAME_WIDTH;
     private int currentRoom = R.drawable.room2;
     private Room room;
-    private RoomScroll roomScroll;
+   // private RoomScroll roomScroll;
     private Player player;
-    private Fridge fridge;
+
+    private Stone stone;
+    private Scissor scissor;
+    private Paper paper;
+    private StoneScissorPaperObject stoneScissorPaperObject;
     private float resolutionControlFactor;
     StatusBar healthBar;
     StatusBar hygeneBar;
@@ -105,12 +112,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
         createStatusBars();
 
-        player = new Player(resolutionControlFactor,BitmapFactory.decodeResource(getResources(), R.drawable.ovo3),BitmapFactory.decodeResource(getResources(),R.drawable.eyes3),(int)(100*resolutionControlFactor),(int)(100*resolutionControlFactor),3,getWidth(),getHeight());
+        player = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.ovo3),BitmapFactory.decodeResource(getResources(),R.drawable.eyes3),(int)(100*resolutionControlFactor),(int)(100*resolutionControlFactor),3,1000,300,resolutionControlFactor);
+        stoneScissorPaperObject = new StoneScissorPaperObject(BitmapFactory.decodeResource(getResources(), R.drawable.stonescissorpaper),(int)(100*resolutionControlFactor), (int)(100*resolutionControlFactor),1,,150,resolutionControlFactor);
+        //roomScroll = new RoomScroll(getWidth(),getHeight(),resolutionControlFactor,BitmapFactory.decodeResource(getResources(),R.drawable.kitchenbutton),BitmapFactory.decodeResource(getResources(),R.drawable.playroombutton),BitmapFactory.decodeResource(getResources(),R.drawable.outsidebutton),BitmapFactory.decodeResource(getResources(),R.drawable.bathbutton));
+        //roomScroll.scroll();
 
-        fridge = new Fridge(BitmapFactory.decodeResource(getResources(), R.drawable.fridge),(int)(200*resolutionControlFactor),(int)(230*resolutionControlFactor),1,getWidth(),getHeight());
-
-        roomScroll = new RoomScroll(getWidth(),getHeight(),resolutionControlFactor,BitmapFactory.decodeResource(getResources(),R.drawable.kitchenbutton),BitmapFactory.decodeResource(getResources(),R.drawable.playroombutton),BitmapFactory.decodeResource(getResources(),R.drawable.outsidebutton),BitmapFactory.decodeResource(getResources(),R.drawable.bathbutton));
-        roomScroll.scroll();
+        playRoomStart();
 
         //start gameloop
 
@@ -119,6 +126,30 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
         thread.setRunning(true);
         thread.start();
+
+    }
+
+    private void playRoomStart(){
+        state = GameState.PLAYROOM;
+
+        setCurrentBackground();
+
+
+    }
+
+    private void stonePaperStarted(){
+        state = GameState.STONEPAPER;
+        setCurrentBackground();
+        paper = new Paper(BitmapFactory.decodeResource(getResources(), R.drawable.paper),(int)(100*resolutionControlFactor), (int)(100*resolutionControlFactor),1,400,200,resolutionControlFactor);
+
+        stone = new Stone(BitmapFactory.decodeResource(getResources(), R.drawable.stone),(int)(100*resolutionControlFactor), (int)(100*resolutionControlFactor),1,200,200,resolutionControlFactor);
+
+        scissor = new Scissor(BitmapFactory.decodeResource(getResources(), R.drawable.scissor),(int)(100*resolutionControlFactor), (int)(100*resolutionControlFactor),1,600,200,resolutionControlFactor);
+
+
+
+        paper.show();
+        stone.show();
 
     }
 
@@ -137,19 +168,18 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
         Rect click = new Rect((int)event.getX(), (int)event.getY(),(int)event.getX()+2, (int)event.getY()+2);
         Log.d("click","x: "+(int)event.getX()+", y: "+ (int)event.getY());
-        if (collision(click, fridge.getRectangle())) {
 
-            {if( state == GameState.KITCHEN){
-                state = GameState.PLAYROOM;}
-            else  state = GameState.KITCHEN;
 
-            }
-        }
-        if (collision(click,roomScroll.getRectangle())){
+        /*if (collision(click,roomScroll.getRectangle())){
             Log.d("collision", "collision: yes");
             if(roomScroll.scrolledOut){roomScroll.scrollDown();
                 Log.d("scrollCheck", "scrol Down!!!");}
             else {roomScroll.scrollUp(); Log.d("scrollCheck","ScrollUp!!");}
+        }*/
+
+        if (collision(click, stoneScissorPaperObject.getRectangle() )){
+            Log.d("games", "SSP started");
+            stonePaperStarted();
         }
 
         return super.onTouchEvent(event);
@@ -164,18 +194,23 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
         else return false;
     }
 
-    public void update(){
-        setCurrentBackground();
+    public void scaleObject(GameObject object){
         final float scaleFactorX = (float)getWidth()/(float)(gameSettings.GAME_WIDTH)/resolutionControlFactor;
         final float scaleFactorY = (float)getHeight()/(float)(gameSettings.GAME_HEIGHT)/resolutionControlFactor;
+        object.scale(scaleFactorX);
+    }
+
+    public void update(){
+
+
         if(player.getPlaying()){
             room.update(BitmapFactory.decodeResource(getResources(), currentRoom));
             player.update();}
-        fridge.update();
-        roomScroll.scale((int) (getWidth() / scaleFactorX), (int) (getHeight() / scaleFactorY));
-        //  player.scale((int) (getWidth() / scaleFactorX), (int) (getHeight() / scaleFactorY));
-        //fridge.scale((int) (getWidth()/ scaleFactorX), (int) (getHeight() / scaleFactorY));
 
+      /*  roomScroll.scale((int) (getWidth() / scaleFactorX), (int) (getHeight() / scaleFactorY));
+         player.scale((int) (getWidth() / scaleFactorX), (int) (getHeight() / scaleFactorY));
+         scissor.scale((int) (getWidth()/ scaleFactorX), (int) (getHeight() / scaleFactorY));
+*/
     }
 
     private void setCurrentBackground() {
@@ -183,7 +218,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
             case KITCHEN: currentRoom = R.drawable.kitchen;break;
             case PLAYROOM: currentRoom = R.drawable.playroom;break;
-            case STONEPAPER: currentRoom = R.drawable.playroom;Log.d("gamestateChanged", "new gameState: "+ 3);break;
+            case STONEPAPER: currentRoom = R.drawable.stonepaperroom;break;
             case BATH: currentRoom = R.drawable.kitchen;break;
             case OUTSIDE: currentRoom = R.drawable.kitchen;break;
 
@@ -193,6 +228,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
     @Override
     public void draw(Canvas canvas)
     {super.draw(canvas);
+        Log.d("Positions","Canvas:  x:"+canvas.getWidth()+"  y:" +canvas.getHeight());
         final float scaleFactorX = (float)getWidth()/(float)(gameSettings.GAME_WIDTH)/resolutionControlFactor;
         final float scaleFactorY = (float)getHeight()/(float)(gameSettings.GAME_HEIGHT)/resolutionControlFactor;
 
@@ -203,13 +239,16 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
             final int savedState = canvas.save();
             canvas.scale(scaleFactorX, scaleFactorY);
 
+            //Log.d("is shown :" ,""+stoneScissorPaperObject.isShown);
             room.draw(canvas);
             player.draw(canvas);
-            //  fridge.draw(canvas);
-            roomScroll.draw(canvas);
+            stoneScissorPaperObject.draw(canvas);
+
+            //roomScroll.draw(canvas);
             drawStatusBars(canvas);
-
-
+            scissor.draw(canvas);
+            stone.draw(canvas);
+            paper.draw(canvas);
 
             canvas.restoreToCount(savedState);
 

@@ -16,14 +16,13 @@ import de.akricorp.ovonat.R;
 /**
  * Created by Hannes on 02.08.2015.
  */
-public class RoomScroll extends GameObject {
+/*public class RoomScroll  {
 
 
 
     boolean collisionRectsDone = false;
     //private Bitmap bg;
     private Rect bg;
-    private GameObject[] objects;
     private boolean active = true;
     private Paint bgPaint = new Paint();
     public boolean scrolledOut;
@@ -37,7 +36,7 @@ public class RoomScroll extends GameObject {
 
 
     public RoomScroll(int canvasWidth, int canvasHeight,float resolutionControlFactor, Bitmap kitchen, Bitmap playRoom, Bitmap outside, Bitmap bath){
-        super(canvasWidth, canvasHeight);
+        super(canvasWidth, canvasHeight,resolutionControlFactor);
         this.resolutionControlFactor = resolutionControlFactor;
         this.width =  canvasWidth/3;
         this.height = canvasHeight/10;
@@ -140,4 +139,4 @@ public class RoomScroll extends GameObject {
 
 
 
-}
+}*/
