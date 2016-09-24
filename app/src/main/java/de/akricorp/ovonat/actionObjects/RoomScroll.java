@@ -95,12 +95,12 @@ public class RoomScroll   {
     }
     public void draw(Canvas canvas)
     {if(active){
-        bg = new Rect(currentX,currentY,currentX+currentWidth, currentY + currentHeight);
+        bg = new Rect(currentX-strokeWidth/2,currentY-strokeWidth/2,currentX+currentWidth+strokeWidth/2, currentY+strokeWidth/2 + currentHeight);
         //canvas.drawBitmap(bg, x, y, null);
         canvas.drawRect(bg, bgPaint);
         if(up){
             for(int i = 0; i < 4;i++){
-                canvas.drawBitmap(roomButtonArrayList.get(i),upX+resolutionControlFactor*115*i,upY+strokeWidth/2,null);
+                canvas.drawBitmap(roomButtonArrayList.get(i),upX+resolutionControlFactor*115*i,upY,null);
 
             }}
     }}
@@ -138,6 +138,19 @@ public class RoomScroll   {
 
         scrollDownRect = new Rect(currentX,currentY,currentX+currentWidth,currentY+currentHeight);
         return scrollDownRect;
+    }
+
+
+    public Rect[] getRoomButtonRectangles(){
+        Rect[] roomRectangles = new Rect[4];
+        for(int i = 0 ; i < roomRectangles.length; i++){
+           /* upX+resolutionControlFactor+115*i,upY,
+            (int)(80*resolutionControlFactor),(int)(80*resolutionControlFactor);*/
+             roomRectangles[i] = new Rect((int)(upX+115*i*resolutionControlFactor),currentY,(int)(upX+(115)*i*resolutionControlFactor+80*resolutionControlFactor),(int)((upY+80*resolutionControlFactor)*resolutionControlFactor));
+        }
+
+
+        return roomRectangles;
     }
 
   /*  public void scroll()

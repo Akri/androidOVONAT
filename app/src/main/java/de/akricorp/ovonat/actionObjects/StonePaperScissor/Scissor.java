@@ -17,23 +17,24 @@ public class Scissor extends GameObject {
 
     public Scissor(Bitmap res, int w, int h, int numFrames,int positionX, int positionY,float resolutionControlFactor)
     {super(positionX,positionY,w,h, resolutionControlFactor);
-        setX(400);
-        setY(200);
-        height = h;
-        width = w;
+
         isShown = true;
+
+
         Bitmap[] image = new Bitmap[numFrames];
         spritesheed = res;
 
         for(int i = 0; i < image.length;i++)
         {
-            image[i] = Bitmap.createBitmap(spritesheed, i*width,0, width, height);
+            image[i] = Bitmap.createScaledBitmap(spritesheed,  width/2, height/2,false);
         }
 
         animation.setFrames(image);
         animation.setDelay(10);
 
     }
+
+
 
     public void update()
     {
@@ -43,11 +44,11 @@ public class Scissor extends GameObject {
     {  if(isShown){
 
 
+
+
         canvas.drawBitmap(animation.getImage(), x, y, null); }
 
     }
-
-
     @Override
     public void clickReaction(){//open fridge menu
     }

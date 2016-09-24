@@ -18,18 +18,16 @@ public class Stone extends GameObject{
 
     public Stone(Bitmap res, int w, int h, int numFrames,int positionX, int positionY,float resolutionControlFactor)
     {super(positionX,positionY,w,h, resolutionControlFactor);
-        setX(200);
-        setY(200);
-        height = h;
-        width = w;
-        isShown = false;
+
+        isShown = true;
+
 
         Bitmap[] image = new Bitmap[numFrames];
         spritesheed = res;
 
         for(int i = 0; i < image.length;i++)
         {
-            image[i] = Bitmap.createBitmap(spritesheed, i*width,0, width, height);
+            image[i] = Bitmap.createScaledBitmap(spritesheed,  width/2, height/2,false);
         }
 
         animation.setFrames(image);
@@ -37,13 +35,17 @@ public class Stone extends GameObject{
 
     }
 
+
+
     public void update()
     {
         if(isShown){ animation.update();}
     }
     public void draw(Canvas canvas)
     {  if(isShown){
-        Log.d("SSPObjekt Position", "x: " + x + ", y: " + y);
+
+
+
 
         canvas.drawBitmap(animation.getImage(), x, y, null); }
 
