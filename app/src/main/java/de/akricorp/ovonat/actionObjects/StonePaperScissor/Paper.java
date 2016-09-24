@@ -17,7 +17,7 @@ public class Paper extends GameObject{
     private Animation animation = new Animation();
 
     public Paper(Bitmap res, int w, int h, int numFrames,int positionX, int positionY,float resolutionControlFactor)
-    {super(positionX,positionY, resolutionControlFactor);
+    {super(positionX,positionY,w,h, resolutionControlFactor);
         setX(600);
         setY(200);
         height = h;

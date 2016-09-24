@@ -11,27 +11,35 @@ public abstract class GameObject {
     protected int originalY; //y value for standart screenWHeight
     public int x;
     public int y;
+    protected int originalWidth;
+    protected int originalHeight;
     protected int width;
     protected int height;
 
 
     public boolean isShown;
 
-    public GameObject(int positionX,int positionY, float resolutionControlFactor){
+    public GameObject(int positionX,int positionY,int w,int h, float resolutionControlFactor){
+        originalHeight =h;
+        originalWidth = w;
+
+        height = (int)(h*resolutionControlFactor);
+        width =(int)( w*resolutionControlFactor);
+
         this.originalX = positionX;
         this.originalY = positionY;
-        scale(resolutionControlFactor);
+        newScale(resolutionControlFactor);
 
     }
 
-    public void setX(int x)
+    public void setX(int newX)
     {
-        this.x = x;
+        x = newX;
     }
 
-    public void setY(int y)
+    public void setY(int newY)
     {
-        this.y = y;
+        y = newY;
     }
 
     public int getX()
@@ -61,10 +69,10 @@ public abstract class GameObject {
 
 
 
-    public void scale(float resolutionControlFactor){
+    public void newScale(float resolutionControlFactor){
         x= (int)((float)originalX*resolutionControlFactor);
         y = (int)((float)originalY*resolutionControlFactor);
-        Log.d("Positions",this.getClass() + ": x: " + x + ", y: " + y);
+        Log.d("Positions new scale",this.getClass() + ": x: " + x + ", y: " + y);
     }
 
     public void clickReaction(){}

@@ -17,17 +17,18 @@ public class StoneScissorPaperObject extends GameObject {
     private Animation animation = new Animation();
 
     public StoneScissorPaperObject(Bitmap res, int w, int h, int numFrames,int positionX, int positionY,float resolutionControlFactor)
-    {super(positionX,positionY, resolutionControlFactor);
-        height = h;
-        width = w;
+    {super(positionX,positionY,w,h, resolutionControlFactor);
+        height = h*(int)resolutionControlFactor;
+        width = w*(int)resolutionControlFactor;
         isShown = true;
+
 
         Bitmap[] image = new Bitmap[numFrames];
         spritesheed = res;
 
         for(int i = 0; i < image.length;i++)
         {
-            image[i] = Bitmap.createBitmap(spritesheed, i*width,0, width, height);
+            image[i] = Bitmap.createScaledBitmap(spritesheed,  width, height,false);
         }
 
         animation.setFrames(image);

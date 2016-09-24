@@ -16,7 +16,7 @@ public class Fridge extends GameObject {
     private Animation animation = new Animation();
 
     public Fridge(Bitmap res, int w, int h, int numFrames,int canvasWidth, int canvasHeight,float resolutionControlfactor)
-    {super(canvasWidth,canvasHeight,resolutionControlfactor);
+    {super(canvasWidth,canvasHeight,w,h,resolutionControlfactor);
         setX(20);
         setY(20);
         height = h;

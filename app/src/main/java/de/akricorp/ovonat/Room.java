@@ -15,6 +15,7 @@ public class Room {
     public Room(Bitmap image){
 
         this.image = image;
+
     }
 
     public void update(Bitmap image)

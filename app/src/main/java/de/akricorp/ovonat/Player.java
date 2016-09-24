@@ -18,11 +18,9 @@ public class Player extends GameObject{
     float resolutionControlFactor;
 
     public Player(Bitmap body, Bitmap eyes,int w, int h, int numFrames, int positionX, int positionY,float resolutionControlFactor)
-    {super(positionX,positionY, resolutionControlFactor);
+    {super(positionX,positionY,w,h, resolutionControlFactor);
         originalX = x = 300;
         originalY = y= 150;
-        height = h;
-        width = w;
         this.resolutionControlFactor = resolutionControlFactor;
         Bitmap[] bodyImage = new Bitmap[numFrames];
         Bitmap[] eyesImage = new Bitmap[numFrames];
@@ -31,8 +29,11 @@ public class Player extends GameObject{
 
         for(int i = 0; i < bodyImage.length;i++)   //eiglt gilt es für alle images also bodyImage vllt falsche variable
         {
-            bodyImage[i] = Bitmap.createBitmap(body, i*width,0, width, height);
-            eyesImage[i] = Bitmap.createBitmap(eyes, i*width,0,width,height);
+
+
+            bodyImage[i] = Bitmap.createBitmap(body,i*originalWidth,0, originalWidth,originalHeight);
+            eyesImage[i] = Bitmap.createBitmap(eyes, i*originalWidth,0, originalWidth,originalHeight);
+            Log.d("bilder",""+i+". :"+bodyImage[i]);
         }
 
         bodyAnimation.setFrames(bodyImage);
@@ -54,9 +55,9 @@ public class Player extends GameObject{
     }
     public void draw(Canvas canvas)
     {
-        Log.d("player gets Drawn", "true");
-        canvas.drawBitmap(bodyAnimation.getImage(),x*resolutionControlFactor,y*resolutionControlFactor,null);
-        canvas.drawBitmap(eyesAnimation.getImage(),x*resolutionControlFactor,y*resolutionControlFactor,null);
+
+        canvas.drawBitmap(Bitmap.createScaledBitmap(bodyAnimation.getImage(),width/2,height/2,false),x*resolutionControlFactor,y*resolutionControlFactor,null);
+        canvas.drawBitmap(Bitmap.createScaledBitmap(eyesAnimation.getImage(),width/2,height/2,false),x*resolutionControlFactor,y*resolutionControlFactor,null);
 
     }
 

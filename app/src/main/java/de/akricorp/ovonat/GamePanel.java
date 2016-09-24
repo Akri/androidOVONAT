@@ -1,13 +1,17 @@
 package de.akricorp.ovonat;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.graphics.Canvas;
 import android.view.SurfaceView;
+import android.view.WindowManager;
 
 import java.util.ArrayList;
 
@@ -29,6 +33,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
     public int height = gameSettings.GAME_HEIGHT;
     public  int width = gameSettings.GAME_WIDTH;
     private int currentRoom = R.drawable.room2;
+    int screenHeight;
     private Room room;
    // private RoomScroll roomScroll;
     private Player player;
@@ -103,18 +108,29 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
     @Override
     public void surfaceCreated(SurfaceHolder holder)
-    {
-
+    {  DisplayMetrics dm = new DisplayMetrics();
+        ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(dm);
+        int screenWidth=dm.widthPixels;
+        int screenHeight=dm.heightPixels;
+        int dens=dm.densityDpi;
+        double wi=(double)width/(double)dens;
+        double hi=(double)height/(double)dens;
+        double x = Math.pow(wi,2);
+        double y = Math.pow(hi,2);
+        double screenInches = Math.sqrt(x+y);
 
         room = new Room(BitmapFactory.decodeResource(getResources(), currentRoom));
-        Log.d("roomW",""+room.getBitmap().getWidth());
-        resolutionControlFactor = (float)room.getBitmap().getWidth()/(float)gameSettings.GAME_WIDTH;
+        Log.d("resolution","screenWidth: "+screenWidth);
+        Log.d("resolution","room:" +room.getBitmap().getWidth());
+        resolutionControlFactor = screenHeight/(float)gameSettings.GAME_HEIGHT;
 
         createStatusBars();
 
-        player = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.ovo3),BitmapFactory.decodeResource(getResources(),R.drawable.eyes3),(int)(100*resolutionControlFactor),(int)(100*resolutionControlFactor),3,1000,300,resolutionControlFactor);
-        stoneScissorPaperObject = new StoneScissorPaperObject(BitmapFactory.decodeResource(getResources(), R.drawable.stonescissorpaper),(int)(100*resolutionControlFactor), (int)(100*resolutionControlFactor),1,,150,resolutionControlFactor);
-        //roomScroll = new RoomScroll(getWidth(),getHeight(),resolutionControlFactor,BitmapFactory.decodeResource(getResources(),R.drawable.kitchenbutton),BitmapFactory.decodeResource(getResources(),R.drawable.playroombutton),BitmapFactory.decodeResource(getResources(),R.drawable.outsidebutton),BitmapFactory.decodeResource(getResources(),R.drawable.bathbutton));
+        player = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.ovo3),
+                BitmapFactory.decodeResource(getResources(),R.drawable.eyes3),300,300,3,1000,300,resolutionControlFactor);
+        stoneScissorPaperObject = new StoneScissorPaperObject(BitmapFactory.decodeResource(getResources(), R.drawable.stonescissorpaper),
+                (int)(100*resolutionControlFactor), (int)(100*resolutionControlFactor),1,200,200,resolutionControlFactor);
+        Log.d("Position","ResFactor:" +resolutionControlFactor);        //roomScroll = new RoomScroll(getWidth(),getHeight(),resolutionControlFactor,BitmapFactory.decodeResource(getResources(),R.drawable.kitchenbutton),BitmapFactory.decodeResource(getResources(),R.drawable.playroombutton),BitmapFactory.decodeResource(getResources(),R.drawable.outsidebutton),BitmapFactory.decodeResource(getResources(),R.drawable.bathbutton));
         //roomScroll.scroll();
 
         playRoomStart();
@@ -178,8 +194,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
         }*/
 
         if (collision(click, stoneScissorPaperObject.getRectangle() )){
-            Log.d("games", "SSP started");
-            stonePaperStarted();
+            Log.d("Positions", "rectangle: "+stoneScissorPaperObject.getRectangle());
+            //stonePaperStarted();
+            Log.d("Positions","objekt:  x:"+stoneScissorPaperObject.getWidth()+"  y:" +stoneScissorPaperObject.getHeight());
         }
 
         return super.onTouchEvent(event);
@@ -194,11 +211,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
         else return false;
     }
 
-    public void scaleObject(GameObject object){
-        final float scaleFactorX = (float)getWidth()/(float)(gameSettings.GAME_WIDTH)/resolutionControlFactor;
-        final float scaleFactorY = (float)getHeight()/(float)(gameSettings.GAME_HEIGHT)/resolutionControlFactor;
-        object.scale(scaleFactorX);
-    }
+
 
     public void update(){
 
@@ -228,15 +241,16 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
     @Override
     public void draw(Canvas canvas)
     {super.draw(canvas);
-        Log.d("Positions","Canvas:  x:"+canvas.getWidth()+"  y:" +canvas.getHeight());
-        final float scaleFactorX = (float)getWidth()/(float)(gameSettings.GAME_WIDTH)/resolutionControlFactor;
-        final float scaleFactorY = (float)getHeight()/(float)(gameSettings.GAME_HEIGHT)/resolutionControlFactor;
+
+        final float scaleFactorX =(float) 1;
+        final float scaleFactorY = 1;
 
 
 
 
         if(canvas!=null) {
             final int savedState = canvas.save();
+
             canvas.scale(scaleFactorX, scaleFactorY);
 
             //Log.d("is shown :" ,""+stoneScissorPaperObject.isShown);
@@ -249,6 +263,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
             scissor.draw(canvas);
             stone.draw(canvas);
             paper.draw(canvas);
+
 
             canvas.restoreToCount(savedState);
 
