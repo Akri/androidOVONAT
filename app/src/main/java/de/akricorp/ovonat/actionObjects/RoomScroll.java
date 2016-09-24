@@ -16,16 +16,15 @@ import de.akricorp.ovonat.R;
 /**
  * Created by Hannes on 02.08.2015.
  */
-/*public class RoomScroll  {
+public class RoomScroll   {
 
 
 
-    boolean collisionRectsDone = false;
+    public boolean up = false;
     //private Bitmap bg;
     private Rect bg;
     private boolean active = true;
     private Paint bgPaint = new Paint();
-    public boolean scrolledOut;
     Bitmap kitchenButton;
     Bitmap playRoomButton;
     Bitmap outsideButton;
@@ -33,41 +32,62 @@ import de.akricorp.ovonat.R;
     ArrayList<Bitmap> roomButtonArrayList = new ArrayList<Bitmap>();
     float resolutionControlFactor;
     Rect scrollDownRect;
+    public int downWidth;
+    public int upWidth;
+    public int downHeight;
+    public int upHeight;
+    public int upX;
+    public int upY;
+    public int downX;
+    public int downY;
+    public int currentHeight;
+    public int currentWidth;
+    public int currentX;
+    public int currentY;
+    public int canvasWidth;
+    public int canvasHeight;
+    public int strokeWidth;
+
 
 
     public RoomScroll(int canvasWidth, int canvasHeight,float resolutionControlFactor, Bitmap kitchen, Bitmap playRoom, Bitmap outside, Bitmap bath){
-        super(canvasWidth, canvasHeight,resolutionControlFactor);
+        this.canvasHeight = canvasHeight;
+        this.canvasWidth = canvasWidth;
         this.resolutionControlFactor = resolutionControlFactor;
-        this.width =  canvasWidth/3;
-        this.height = canvasHeight/10;
-        this.x = (canvasWidth/2) - (this.width/2);
-        this.y = (canvasHeight-height)  ;
-        bg = new Rect(x,y,x+width,y + height);
+        this.upWidth =  canvasWidth/2;
+        this.upHeight = canvasHeight/8;
+        this.upX = (canvasWidth/2) - (this.upWidth/2);
+        this.upY= (canvasHeight-upHeight);
+        this.downWidth =  canvasWidth/4;
+        this.downHeight = canvasHeight/12;
+        this.downX = (canvasWidth/2) - (this.downWidth/2);
+        this.downY= (canvasHeight-downHeight);
+        strokeWidth = (int) ((float) 5 * resolutionControlFactor);
         bgPaint.setColor(Color.rgb(0, 0, 0));
-        bgPaint.setStrokeWidth((int) ((float) 5 * resolutionControlFactor));
+        bgPaint.setStrokeWidth(strokeWidth);
         bgPaint.setStyle(Paint.Style.STROKE);
 
-        kitchenButton = kitchen;
+        kitchenButton =  Bitmap.createScaledBitmap(kitchen,(int)(80*resolutionControlFactor),(int)(80*resolutionControlFactor),false);
         roomButtonArrayList.add(kitchenButton);
-        playRoomButton = playRoom;
+        playRoomButton = Bitmap.createScaledBitmap(playRoom,(int)(80*resolutionControlFactor),(int)(80*resolutionControlFactor),false);
         roomButtonArrayList.add(playRoomButton);
-        outsideButton = outside;
+        outsideButton = Bitmap.createScaledBitmap(outside,(int)(80*resolutionControlFactor),(int)(80*resolutionControlFactor),false);
         roomButtonArrayList.add(outsideButton);
-        bathButton = bath;
+        bathButton = Bitmap.createScaledBitmap(bath,(int)(80*resolutionControlFactor),(int)(80*resolutionControlFactor),false);
         roomButtonArrayList.add(bathButton);
+        scroll();
 
-        scrollDown();
-
-    }
-
-
-    public void scale(int canvasWidth,int canvasHeight){
-
-        this.canvasHeight=canvasHeight;
-        this.canvasWidth=canvasWidth;
-
+        Log.d("roomScroll", "screenWidth: "+ canvasWidth);
+        Log.d("roomScroll", "currentX: "+currentX);
+        Log.d("roomScroll", "downX: "+downX);
 
     }
+
+
+
+
+
+
 
     public void update()
     {
@@ -75,47 +95,52 @@ import de.akricorp.ovonat.R;
     }
     public void draw(Canvas canvas)
     {if(active){
+        bg = new Rect(currentX,currentY,currentX+currentWidth, currentY + currentHeight);
         //canvas.drawBitmap(bg, x, y, null);
         canvas.drawRect(bg, bgPaint);
-        if(scrolledOut){
+        if(up){
             for(int i = 0; i < 4;i++){
-                canvas.drawBitmap(roomButtonArrayList.get(i),x+200*resolutionControlFactor*i,y,null);
+                canvas.drawBitmap(roomButtonArrayList.get(i),upX+resolutionControlFactor*115*i,upY+strokeWidth/2,null);
 
             }}
     }}
 
 
-    public void scrollDown(){      //scrolls the roomScroll scrollbar down by changing its measurements
-        height = canvasHeight/20;
-        width= canvasWidth/8;
-        this.x = canvasWidth/2-width/2;
-        this.y = canvasHeight-height;
-        bg.set(this.x,this.y,x+width,y+height);
-        if(!collisionRectsDone){
-            scrollDownRect = new Rect(bg);
-            collisionRectsDone= true;}
-        scrolledOut = false;
+    public void scroll(){      //scrolls the roomScroll scrollbar down by changing its measurements
 
+    if(!up){
+        currentX = upX;
+        currentY = upY;
+        currentHeight = upHeight;
+        currentWidth = upWidth;
+        up = true;
+    }
+        else{
+        currentX = downX;
+        currentY = downY;
+        currentHeight = downHeight;
+        currentWidth = downWidth;
+        up = false;
 
     }
 
-    public void scrollUp(){   //scrolls the roomScroll scrollbar up by changing its measurements
-        width = (int)(canvasWidth*0.8);
-        height = canvasHeight/6;
-        this.x = (canvasWidth/2)- (width / 2);
-        this.y = canvasHeight - height;
-        Log.d("scroll y" , "scroll y: "+this.y);
-        bg.set(this.x, this.y, this.x + width, this.y + height);
-
-        scrolledOut= true;
     }
 
-    @Override
+   public void scrollUp(){
+       up = true;
+   }
+    public void scrollDown(){
+        up = false;
+    }
+
+
     public Rect getRectangle(){
+
+        scrollDownRect = new Rect(currentX,currentY,currentX+currentWidth,currentY+currentHeight);
         return scrollDownRect;
     }
 
-    public void scroll()
+  /*  public void scroll()
     {
 
         long startTime;
@@ -133,10 +158,11 @@ import de.akricorp.ovonat.R;
 
 
 
-            }}}
+            }}
+            }*/
 
 
 
 
 
-}*/
+}

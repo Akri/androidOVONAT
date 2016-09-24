@@ -5,6 +5,6 @@ package de.akricorp.ovonat;
  */
 public class GameSettings {
 
-    public int GAME_WIDTH = 1920;
-    public int GAME_HEIGHT = 1080;
+    public int GAME_WIDTH = 856;
+    public int GAME_HEIGHT = 480;
 }

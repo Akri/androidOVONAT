@@ -18,6 +18,7 @@ import java.util.ArrayList;
 
 //import de.akricorp.ovonat.actionObjects.RoomScroll;
 import de.akricorp.ovonat.actionObjects.Playroom.StoneScissorPaperObject;
+import de.akricorp.ovonat.actionObjects.RoomScroll;
 import de.akricorp.ovonat.actionObjects.StonePaperScissor.Paper;
 import de.akricorp.ovonat.actionObjects.StonePaperScissor.Scissor;
 import de.akricorp.ovonat.actionObjects.StonePaperScissor.Stone;
@@ -35,7 +36,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
     private int currentRoom = R.drawable.room2;
     int screenHeight;
     private Room room;
-   // private RoomScroll roomScroll;
+    private RoomScroll roomScroll;
     private Player player;
 
     private Stone stone;
@@ -130,8 +131,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
                 BitmapFactory.decodeResource(getResources(),R.drawable.eyes3),300,300,3,1000,300,resolutionControlFactor);
         stoneScissorPaperObject = new StoneScissorPaperObject(BitmapFactory.decodeResource(getResources(), R.drawable.stonescissorpaper),
                 (int)(100*resolutionControlFactor), (int)(100*resolutionControlFactor),1,200,200,resolutionControlFactor);
-        Log.d("Position","ResFactor:" +resolutionControlFactor);        //roomScroll = new RoomScroll(getWidth(),getHeight(),resolutionControlFactor,BitmapFactory.decodeResource(getResources(),R.drawable.kitchenbutton),BitmapFactory.decodeResource(getResources(),R.drawable.playroombutton),BitmapFactory.decodeResource(getResources(),R.drawable.outsidebutton),BitmapFactory.decodeResource(getResources(),R.drawable.bathbutton));
-        //roomScroll.scroll();
+        Log.d("Position","ResFactor:" +resolutionControlFactor);
+        roomScroll = new RoomScroll(screenWidth,screenHeight,resolutionControlFactor,BitmapFactory.decodeResource(getResources(),R.drawable.kitchenbutton),BitmapFactory.decodeResource(getResources(),R.drawable.playroombutton),BitmapFactory.decodeResource(getResources(),R.drawable.outsidebutton),BitmapFactory.decodeResource(getResources(),R.drawable.bathbutton));
+        roomScroll.scrollUp();
 
         playRoomStart();
 
@@ -181,17 +183,19 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         Log.d("getData", repository.getData("miniCount"));
+        Log.d("roomScroll", "rect: "+ roomScroll.getRectangle());
 
         Rect click = new Rect((int)event.getX(), (int)event.getY(),(int)event.getX()+2, (int)event.getY()+2);
         Log.d("click","x: "+(int)event.getX()+", y: "+ (int)event.getY());
 
 
-        /*if (collision(click,roomScroll.getRectangle())){
-            Log.d("collision", "collision: yes");
-            if(roomScroll.scrolledOut){roomScroll.scrollDown();
-                Log.d("scrollCheck", "scrol Down!!!");}
-            else {roomScroll.scrollUp(); Log.d("scrollCheck","ScrollUp!!");}
-        }*/
+        if (collision(click,roomScroll.getRectangle())){
+
+
+                Log.d("scrollCheck", "scrol Down!!!");
+                roomScroll.scroll();
+
+        }
 
         if (collision(click, stoneScissorPaperObject.getRectangle() )){
             Log.d("Positions", "rectangle: "+stoneScissorPaperObject.getRectangle());
@@ -258,7 +262,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
             player.draw(canvas);
             stoneScissorPaperObject.draw(canvas);
 
-            //roomScroll.draw(canvas);
+            roomScroll.draw(canvas);
             drawStatusBars(canvas);
             scissor.draw(canvas);
             stone.draw(canvas);

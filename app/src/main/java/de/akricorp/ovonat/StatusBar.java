@@ -12,11 +12,11 @@ import android.util.Log;
 public class StatusBar {
     private int currentValue;
     private int maxValue = 10;
-    private int xPosition = 500;
+    private int xPosition = 700;
     private int yPosition = 50;
-    private int barHeight = 50;
-    private int barWidth = 25;
-    private int barOffset = 30;
+    private int barHeight = 70;
+    private int barWidth = 30;
+    private int barOffset = 40;
     private Rect barBorder;
     private Paint barBorderPaint = new Paint();
     private Paint barPaint = new Paint();
