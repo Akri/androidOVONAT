@@ -128,7 +128,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         createStatusBars();
         room = new Room(BitmapFactory.decodeResource(getResources(), currentRoom), resolutionControlFactor);
         player = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.ovo3),
-                BitmapFactory.decodeResource(getResources(), R.drawable.eyes3), 300, 300, 3, 1000, 300, resolutionControlFactor);
+                BitmapFactory.decodeResource(getResources(), R.drawable.eyes3), 300, 300, 3, 300, 150, resolutionControlFactor);
 
 
         roomScroll = new RoomScroll(screenWidth, screenHeight, resolutionControlFactor, BitmapFactory.decodeResource(getResources(), R.drawable.kitchenbutton), BitmapFactory.decodeResource(getResources(), R.drawable.playroombutton), BitmapFactory.decodeResource(getResources(), R.drawable.outsidebutton), BitmapFactory.decodeResource(getResources(), R.drawable.bathbutton));
@@ -159,10 +159,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
     private void stonePaperStarted() {
         state = GameState.STONEPAPER;
+        player.setX(400); player.setY(80);
 
-        stoneScissorPaperObjects.add(paper = new Paper(BitmapFactory.decodeResource(getResources(), R.drawable.paper), (int) (100 * resolutionControlFactor), (int) (100 * resolutionControlFactor), 1, 350, 200, resolutionControlFactor));
-        stoneScissorPaperObjects.add(stone = new Stone(BitmapFactory.decodeResource(getResources(), R.drawable.stone), (int) (100 * resolutionControlFactor), (int) (100 * resolutionControlFactor), 1, 150, 200, resolutionControlFactor));
-        stoneScissorPaperObjects.add(scissor = new Scissor(BitmapFactory.decodeResource(getResources(), R.drawable.scissor), (int) (100 * resolutionControlFactor), (int) (100 * resolutionControlFactor), 1, 550, 200, resolutionControlFactor));
+        stoneScissorPaperObjects.add(paper = new Paper(BitmapFactory.decodeResource(getResources(), R.drawable.paper), (int) (100 * resolutionControlFactor), (int) (100 * resolutionControlFactor), 1, 350, 300, resolutionControlFactor));
+        stoneScissorPaperObjects.add(stone = new Stone(BitmapFactory.decodeResource(getResources(), R.drawable.stone), (int) (100 * resolutionControlFactor), (int) (100 * resolutionControlFactor), 1, 150, 300, resolutionControlFactor));
+        stoneScissorPaperObjects.add(scissor = new Scissor(BitmapFactory.decodeResource(getResources(), R.drawable.scissor), (int) (100 * resolutionControlFactor), (int) (100 * resolutionControlFactor), 1, 550, 300, resolutionControlFactor));
 
 
 

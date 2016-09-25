@@ -15,6 +15,7 @@ public abstract class GameObject {
     protected int originalHeight;
     protected int width;
     protected int height;
+    private float resolutionControlFactor;
 
 
     public boolean isShown;
@@ -22,7 +23,7 @@ public abstract class GameObject {
     public GameObject(int positionX,int positionY,int w,int h, float resolutionControlFactor){
         originalHeight =h;
         originalWidth = w;
-
+        this.resolutionControlFactor = resolutionControlFactor;
         height = (int)(h*resolutionControlFactor);
         width =(int)( w*resolutionControlFactor);
 
@@ -34,12 +35,12 @@ public abstract class GameObject {
 
     public void setX(int newX)
     {
-        x = newX;
+        x = (int)(newX*resolutionControlFactor);
     }
 
     public void setY(int newY)
     {
-        y = newY;
+        y = (int)(newY*resolutionControlFactor);
     }
 
     public int getX()

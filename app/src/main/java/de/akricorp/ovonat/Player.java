@@ -19,8 +19,8 @@ public class Player extends GameObject{
 
     public Player(Bitmap body, Bitmap eyes,int w, int h, int numFrames, int positionX, int positionY,float resolutionControlFactor)
     {super(positionX,positionY,w,h, resolutionControlFactor);
-        originalX = x = 300;
-        originalY = y= 150;
+        Log.d("player", "x: "+x);
+        Log.d("player", "y: "+y);
         this.resolutionControlFactor = resolutionControlFactor;
         Bitmap[] bodyImage = new Bitmap[numFrames];
         Bitmap[] eyesImage = new Bitmap[numFrames];
@@ -56,8 +56,8 @@ public class Player extends GameObject{
     public void draw(Canvas canvas)
     {
 
-        canvas.drawBitmap(Bitmap.createScaledBitmap(bodyAnimation.getImage(),width/2,height/2,false),x*resolutionControlFactor,y*resolutionControlFactor,null);
-        canvas.drawBitmap(Bitmap.createScaledBitmap(eyesAnimation.getImage(),width/2,height/2,false),x*resolutionControlFactor,y*resolutionControlFactor,null);
+        canvas.drawBitmap(Bitmap.createScaledBitmap(bodyAnimation.getImage(),width/2,height/2,false),x,y,null);
+        canvas.drawBitmap(Bitmap.createScaledBitmap(eyesAnimation.getImage(),width/2,height/2,false),x,y,null);
 
     }
 
