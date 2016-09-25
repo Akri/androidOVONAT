@@ -15,32 +15,34 @@ public abstract class GameObject {
     protected int originalHeight;
     protected int width;
     protected int height;
-    private float resolutionControlFactor;
+    private float resolutionControlFactorX;
+    private float resolutionControlFactorY;
 
 
     public boolean isShown;
 
-    public GameObject(int positionX,int positionY,int w,int h, float resolutionControlFactor){
+    public GameObject(int positionX,int positionY,int w,int h, float resolutionControlFactorX,float resolutionControlFactorY){
         originalHeight =h;
         originalWidth = w;
-        this.resolutionControlFactor = resolutionControlFactor;
-        height = (int)(h*resolutionControlFactor);
-        width =(int)( w*resolutionControlFactor);
+        this.resolutionControlFactorX = resolutionControlFactorX;
+        this.resolutionControlFactorY = resolutionControlFactorY;
+        height = (int)(h*resolutionControlFactorY);
+        width =(int)( w*resolutionControlFactorX);
 
         this.originalX = positionX;
         this.originalY = positionY;
-        newScale(resolutionControlFactor);
+        newScale(resolutionControlFactorX, resolutionControlFactorY);
 
     }
 
     public void setX(int newX)
     {
-        x = (int)(newX*resolutionControlFactor);
+        x = (int)(newX*resolutionControlFactorX);
     }
 
     public void setY(int newY)
     {
-        y = (int)(newY*resolutionControlFactor);
+        y = (int)(newY*resolutionControlFactorY);
     }
 
     public int getX()
@@ -70,9 +72,9 @@ public abstract class GameObject {
 
 
 
-    public void newScale(float resolutionControlFactor){
-        x= (int)((float)originalX*resolutionControlFactor);
-        y = (int)((float)originalY*resolutionControlFactor);
+    public void newScale(float resolutionControlFactorX, float resolutionControlFactorY){
+        x= (int)((float)originalX*resolutionControlFactorX);
+        y = (int)((float)originalY*resolutionControlFactorY);
         Log.d("Positions new scale",this.getClass() + ": x: " + x + ", y: " + y);
     }
 

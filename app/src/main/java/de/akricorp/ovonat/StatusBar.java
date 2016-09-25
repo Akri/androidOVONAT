@@ -21,16 +21,18 @@ public class StatusBar {
     private Paint barBorderPaint = new Paint();
     private Paint barPaint = new Paint();
     private Rect bar;
-    private float resolutionControlFactor;
+    private float resolutionControlFactorX;
+    private float resolutionControlFactorY;
 
-    public StatusBar(float resolutionControlFactor,int value, int position){
-        this.resolutionControlFactor = resolutionControlFactor;
-        xPosition = (int)(xPosition*resolutionControlFactor);
-        yPosition = (int)(yPosition*resolutionControlFactor);
-        barHeight = (int)(barHeight*resolutionControlFactor);
-        barWidth = (int)(barWidth*resolutionControlFactor);
+    public StatusBar(float resolutionControlFactorX,float resolutionControlFactorY,int value, int position){
+        this.resolutionControlFactorX = resolutionControlFactorX;
+        this.resolutionControlFactorY = resolutionControlFactorY;
+        xPosition = (int)(xPosition*resolutionControlFactorX);
+        yPosition = (int)(yPosition*resolutionControlFactorY);
+        barHeight = (int)(barHeight*resolutionControlFactorY);
+        barWidth = (int)(barWidth*resolutionControlFactorX);
         setValue(maxValue-value);
-        xPosition += position*barOffset*resolutionControlFactor;
+        xPosition += position*barOffset*resolutionControlFactorX;
         setupVisualisation();
     }
     public void setValue(int value){
@@ -43,7 +45,7 @@ public class StatusBar {
     public void setupVisualisation() {
         barBorder = new Rect(xPosition, yPosition, xPosition + barWidth, yPosition + barHeight);
         barBorderPaint.setColor(Color.BLACK);
-        barBorderPaint.setStrokeWidth((int)((float)4*resolutionControlFactor));
+        barBorderPaint.setStrokeWidth((int)((float)4*resolutionControlFactorX));
         barBorderPaint.setStyle(Paint.Style.STROKE);
         bar = new Rect(xPosition, yPosition + currentValue * barHeight / maxValue, xPosition + barWidth, yPosition + barHeight);
         barPaint.setColor(Color.RED);

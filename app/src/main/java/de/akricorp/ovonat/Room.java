@@ -11,11 +11,13 @@ public class Room {
 
     private Bitmap image;
     private int x, y;
-    private float resolutionControlFactor;
+    private float resolutionControlFactorX;
+    private float resolutionControlFactorY;
 
 
-    public Room(Bitmap image,float resolutionControlFactor){
-        this.resolutionControlFactor = resolutionControlFactor;
+    public Room(Bitmap image,float resolutionControlFactorX,float resolutionControlFactorY){
+        this.resolutionControlFactorX = resolutionControlFactorX;
+        this.resolutionControlFactorY = resolutionControlFactorY;
         this.image = image;
 
     }
@@ -23,6 +25,7 @@ public class Room {
     public void update(Bitmap image)
     {
         this.image = image;
+
     }
 
     public Bitmap getBitmap(){
@@ -30,8 +33,8 @@ public class Room {
     }
 
     public void draw(Canvas canvas)
-    {   Log.d("scale", resolutionControlFactor+"");
-        Bitmap scaledImage = Bitmap.createScaledBitmap(image, (int)(image.getWidth()/3*resolutionControlFactor),(int)(image.getHeight()/3*resolutionControlFactor),false);
+    {
+        Bitmap scaledImage = Bitmap.createScaledBitmap(image, (int)(image.getWidth()*resolutionControlFactorX),(int)(image.getHeight()*resolutionControlFactorY),false);
         canvas.drawBitmap(scaledImage, 0,0,null);
     }
 }

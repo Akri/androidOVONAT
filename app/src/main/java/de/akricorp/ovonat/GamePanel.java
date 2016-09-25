@@ -48,7 +48,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     private Scissor scissor;
     private Paper paper;
     private StoneScissorPaperObject stoneScissorPaperObject;
-    private float resolutionControlFactor;
+    private float resolutionControlFactorX;
+    private float resolutionControlFactorY;
     StatusBar healthBar;
     StatusBar hygeneBar;
     StatusBar saturationBar;
@@ -122,17 +123,17 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         double screenInches = Math.sqrt(x + y);
         bitmapFactoryOptions.inScaled = false;
 
+       Log.d("resolution", "x: "+screenWidth+"  y: "+screenHeight);
 
-
-        resolutionControlFactor = screenHeight / (float) gameSettings.GAME_HEIGHT;
-
+        resolutionControlFactorX = screenWidth / (float) gameSettings.GAME_WIDTH;
+        resolutionControlFactorY = screenHeight/ (float) gameSettings.GAME_HEIGHT;
         createStatusBars();
-        room = new Room(BitmapFactory.decodeResource(getResources(), currentRoom,bitmapFactoryOptions), resolutionControlFactor);
+        room = new Room(BitmapFactory.decodeResource(getResources(), currentRoom,bitmapFactoryOptions), resolutionControlFactorX,resolutionControlFactorY);
         player = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.ovo3,bitmapFactoryOptions),
-                BitmapFactory.decodeResource(getResources(), R.drawable.eyes3,bitmapFactoryOptions), (int)(100), (int)(100), 3, 300, 150, resolutionControlFactor);
+                BitmapFactory.decodeResource(getResources(), R.drawable.eyes3,bitmapFactoryOptions), (int)(100), (int)(100), 3, 300, 150, resolutionControlFactorX, resolutionControlFactorY);
 
 
-        roomScroll = new RoomScroll(screenWidth, screenHeight, resolutionControlFactor, BitmapFactory.decodeResource(getResources(), R.drawable.kitchenbutton,bitmapFactoryOptions), BitmapFactory.decodeResource(getResources(), R.drawable.playroombutton), BitmapFactory.decodeResource(getResources(), R.drawable.outsidebutton), BitmapFactory.decodeResource(getResources(), R.drawable.bathbutton));
+        roomScroll = new RoomScroll(screenWidth, screenHeight, resolutionControlFactorX,resolutionControlFactorY, BitmapFactory.decodeResource(getResources(), R.drawable.kitchenbutton,bitmapFactoryOptions), BitmapFactory.decodeResource(getResources(), R.drawable.playroombutton), BitmapFactory.decodeResource(getResources(), R.drawable.outsidebutton), BitmapFactory.decodeResource(getResources(), R.drawable.bathbutton));
         roomScroll.scrollUp();
 
         playRoomStart();
@@ -150,7 +151,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     private void playRoomStart() {
         if(stoneScissorPaperObject == null){
             playRoomObjects.add(stoneScissorPaperObject = new StoneScissorPaperObject(BitmapFactory.decodeResource(getResources(), R.drawable.stonescissorpaper,bitmapFactoryOptions),
-                    (int) (100 * resolutionControlFactor), (int) (100 * resolutionControlFactor), 1, 200, 200, resolutionControlFactor));
+                    (int) (100), (int) (100), 1, 200, 200, resolutionControlFactorX, resolutionControlFactorY));
         }
         state = GameState.PLAYROOM;
 
@@ -162,9 +163,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         state = GameState.STONEPAPER;
         player.setX(400); player.setY(80);
 
-        stoneScissorPaperObjects.add(paper = new Paper(BitmapFactory.decodeResource(getResources(), R.drawable.paper,bitmapFactoryOptions), (int) (100 * resolutionControlFactor), (int) (100 * resolutionControlFactor), 1, 350, 300, resolutionControlFactor));
-        stoneScissorPaperObjects.add(stone = new Stone(BitmapFactory.decodeResource(getResources(), R.drawable.stone,bitmapFactoryOptions), (int) (100 * resolutionControlFactor), (int) (100 * resolutionControlFactor), 1, 150, 300, resolutionControlFactor));
-        stoneScissorPaperObjects.add(scissor = new Scissor(BitmapFactory.decodeResource(getResources(), R.drawable.scissor,bitmapFactoryOptions), (int) (100 * resolutionControlFactor), (int) (100 * resolutionControlFactor), 1, 550, 300, resolutionControlFactor));
+        stoneScissorPaperObjects.add(paper = new Paper(BitmapFactory.decodeResource(getResources(), R.drawable.paper,bitmapFactoryOptions),  100,  100, 1, 350, 300, resolutionControlFactorX,resolutionControlFactorY));
+        stoneScissorPaperObjects.add(stone = new Stone(BitmapFactory.decodeResource(getResources(), R.drawable.stone,bitmapFactoryOptions), 100 , 100, 1, 150, 300, resolutionControlFactorX, resolutionControlFactorY));
+        stoneScissorPaperObjects.add(scissor = new Scissor(BitmapFactory.decodeResource(getResources(), R.drawable.scissor,bitmapFactoryOptions), 100,  100, 1, 550, 300, resolutionControlFactorX,resolutionControlFactorY));
 
 
 
@@ -172,11 +173,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     private void createStatusBars() {
-        hygeneBar = new StatusBar(resolutionControlFactor, Integer.parseInt(repository.getData("hygene")), 1);
+        hygeneBar = new StatusBar(resolutionControlFactorX,resolutionControlFactorY, Integer.parseInt(repository.getData("hygene")), 1);
         statusBarArrayList.add(hygeneBar);
-        healthBar = new StatusBar(resolutionControlFactor, Integer.parseInt(repository.getData("health")), 2);
+        healthBar = new StatusBar(resolutionControlFactorX,resolutionControlFactorY, Integer.parseInt(repository.getData("health")), 2);
         statusBarArrayList.add(healthBar);
-        saturationBar = new StatusBar(resolutionControlFactor, Integer.parseInt(repository.getData("foodSaturation")), 3);
+        saturationBar = new StatusBar(resolutionControlFactorX,resolutionControlFactorY, Integer.parseInt(repository.getData("foodSaturation")), 3);
         statusBarArrayList.add(saturationBar);
     }
 

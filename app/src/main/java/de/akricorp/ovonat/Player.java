@@ -17,8 +17,8 @@ public class Player extends GameObject{
     private Animation eyesAnimation = new Animation();
     float resolutionControlFactor;
 
-    public Player(Bitmap body, Bitmap eyes,int w, int h, int numFrames, int positionX, int positionY,float resolutionControlFactor)
-    {super(positionX,positionY,w,h, resolutionControlFactor);
+    public Player(Bitmap body, Bitmap eyes,int w, int h, int numFrames, int positionX, int positionY,float resolutionControlFactorX,float resolutionControlFactorY)
+    {super(positionX,positionY,w,h, resolutionControlFactorX,resolutionControlFactorY);
         Log.d("player", "x: "+x);
         Log.d("player", "y: "+y);
         this.resolutionControlFactor = resolutionControlFactor;

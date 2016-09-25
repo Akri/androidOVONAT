@@ -16,8 +16,8 @@ public class StoneScissorPaperObject extends GameObject {
     Bitmap spritesheed;
     private Animation animation = new Animation();
 
-    public StoneScissorPaperObject(Bitmap res, int w, int h, int numFrames,int positionX, int positionY,float resolutionControlFactor)
-    {super(positionX,positionY,w,h, resolutionControlFactor);
+    public StoneScissorPaperObject(Bitmap res, int w, int h, int numFrames,int positionX, int positionY,float resolutionControlFactorX,float resolutionControlFactorY)
+    {super(positionX,positionY,w,h, resolutionControlFactorX, resolutionControlFactorY);
 
         isShown = true;
 
