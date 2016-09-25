@@ -29,6 +29,7 @@ import de.akricorp.ovonat.repository.DataRepository;
  */
 public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
+    private BitmapFactory.Options bitmapFactoryOptions = new BitmapFactory.Options();
     private static GameSettings gameSettings = new GameSettings();
     private MainThread thread;
     public int height = gameSettings.GAME_HEIGHT;
@@ -119,19 +120,19 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         double x = Math.pow(wi, 2);
         double y = Math.pow(hi, 2);
         double screenInches = Math.sqrt(x + y);
-
+        bitmapFactoryOptions.inScaled = false;
 
 
 
         resolutionControlFactor = screenHeight / (float) gameSettings.GAME_HEIGHT;
 
         createStatusBars();
-        room = new Room(BitmapFactory.decodeResource(getResources(), currentRoom), resolutionControlFactor);
-        player = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.ovo3),
-                BitmapFactory.decodeResource(getResources(), R.drawable.eyes3), 300, 300, 3, 300, 150, resolutionControlFactor);
+        room = new Room(BitmapFactory.decodeResource(getResources(), currentRoom,bitmapFactoryOptions), resolutionControlFactor);
+        player = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.ovo3,bitmapFactoryOptions),
+                BitmapFactory.decodeResource(getResources(), R.drawable.eyes3,bitmapFactoryOptions), (int)(100), (int)(100), 3, 300, 150, resolutionControlFactor);
 
 
-        roomScroll = new RoomScroll(screenWidth, screenHeight, resolutionControlFactor, BitmapFactory.decodeResource(getResources(), R.drawable.kitchenbutton), BitmapFactory.decodeResource(getResources(), R.drawable.playroombutton), BitmapFactory.decodeResource(getResources(), R.drawable.outsidebutton), BitmapFactory.decodeResource(getResources(), R.drawable.bathbutton));
+        roomScroll = new RoomScroll(screenWidth, screenHeight, resolutionControlFactor, BitmapFactory.decodeResource(getResources(), R.drawable.kitchenbutton,bitmapFactoryOptions), BitmapFactory.decodeResource(getResources(), R.drawable.playroombutton), BitmapFactory.decodeResource(getResources(), R.drawable.outsidebutton), BitmapFactory.decodeResource(getResources(), R.drawable.bathbutton));
         roomScroll.scrollUp();
 
         playRoomStart();
@@ -148,7 +149,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
     private void playRoomStart() {
         if(stoneScissorPaperObject == null){
-           playRoomObjects.add(stoneScissorPaperObject = new StoneScissorPaperObject(BitmapFactory.decodeResource(getResources(), R.drawable.stonescissorpaper),
+            playRoomObjects.add(stoneScissorPaperObject = new StoneScissorPaperObject(BitmapFactory.decodeResource(getResources(), R.drawable.stonescissorpaper,bitmapFactoryOptions),
                     (int) (100 * resolutionControlFactor), (int) (100 * resolutionControlFactor), 1, 200, 200, resolutionControlFactor));
         }
         state = GameState.PLAYROOM;
@@ -161,9 +162,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         state = GameState.STONEPAPER;
         player.setX(400); player.setY(80);
 
-        stoneScissorPaperObjects.add(paper = new Paper(BitmapFactory.decodeResource(getResources(), R.drawable.paper), (int) (100 * resolutionControlFactor), (int) (100 * resolutionControlFactor), 1, 350, 300, resolutionControlFactor));
-        stoneScissorPaperObjects.add(stone = new Stone(BitmapFactory.decodeResource(getResources(), R.drawable.stone), (int) (100 * resolutionControlFactor), (int) (100 * resolutionControlFactor), 1, 150, 300, resolutionControlFactor));
-        stoneScissorPaperObjects.add(scissor = new Scissor(BitmapFactory.decodeResource(getResources(), R.drawable.scissor), (int) (100 * resolutionControlFactor), (int) (100 * resolutionControlFactor), 1, 550, 300, resolutionControlFactor));
+        stoneScissorPaperObjects.add(paper = new Paper(BitmapFactory.decodeResource(getResources(), R.drawable.paper,bitmapFactoryOptions), (int) (100 * resolutionControlFactor), (int) (100 * resolutionControlFactor), 1, 350, 300, resolutionControlFactor));
+        stoneScissorPaperObjects.add(stone = new Stone(BitmapFactory.decodeResource(getResources(), R.drawable.stone,bitmapFactoryOptions), (int) (100 * resolutionControlFactor), (int) (100 * resolutionControlFactor), 1, 150, 300, resolutionControlFactor));
+        stoneScissorPaperObjects.add(scissor = new Scissor(BitmapFactory.decodeResource(getResources(), R.drawable.scissor,bitmapFactoryOptions), (int) (100 * resolutionControlFactor), (int) (100 * resolutionControlFactor), 1, 550, 300, resolutionControlFactor));
 
 
 
@@ -236,7 +237,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
 
         if (player.getPlaying()) {
-            room.update(BitmapFactory.decodeResource(getResources(), currentRoom));
+            room.update(BitmapFactory.decodeResource(getResources(), currentRoom,bitmapFactoryOptions));
             player.update();
         }
 
@@ -268,16 +269,16 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                 for(GameObject object : playRoomObjects){
                     object.show();
                 }
-             for(GameObject object : kitchenObjects){
-                   object.hide();
+                for(GameObject object : kitchenObjects){
+                    object.hide();
                 }
-               for(GameObject object : bathRoomObjects){
-                   object.hide();
+                for(GameObject object : bathRoomObjects){
+                    object.hide();
                 }
                 for(GameObject object : outsideObjects){
-                   object.hide();
+                    object.hide();
                 }
-               for(GameObject object : stoneScissorPaperObjects){
+                for(GameObject object : stoneScissorPaperObjects){
                     object.hide();}
                 currentRoom = R.drawable.playroom;
                 break;
