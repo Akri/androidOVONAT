@@ -15,18 +15,18 @@ public class Fridge extends GameObject {
     Bitmap spritesheed;
     private Animation animation = new Animation();
 
-    public Fridge(Bitmap res, int w, int h, int numFrames,int canvasWidth, int canvasHeight,float resolutionControlfactorX, float resolutionControlfactorY)
-    {super(canvasWidth,canvasHeight,w,h,resolutionControlfactorX, resolutionControlfactorY);
+    public Fridge(Bitmap[] res, int w, int h, int numFrames,int canvasWidth, int canvasHeight,float resolutionControlfactorX, float resolutionControlfactorY)
+    {super(res,canvasWidth,canvasHeight,w,h,resolutionControlfactorX, resolutionControlfactorY,numFrames);
         setX(20);
         setY(20);
         height = h;
         width = w;
 
         Bitmap[] image = new Bitmap[numFrames];
-        spritesheed = res;
+
 
         for(int i = 0; i < image.length;i++)
-        {
+        { spritesheed = res[1];
             image[i] = Bitmap.createBitmap(spritesheed, i*width,0, width, height);
         }
 

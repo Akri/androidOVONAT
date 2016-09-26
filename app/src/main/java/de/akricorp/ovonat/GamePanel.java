@@ -2,6 +2,7 @@ package de.akricorp.ovonat;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.util.DisplayMetrics;
@@ -19,16 +20,16 @@ import java.util.ArrayList;
 //import de.akricorp.ovonat.actionObjects.RoomScroll;
 import de.akricorp.ovonat.actionObjects.Playroom.StoneScissorPaperObject;
 import de.akricorp.ovonat.actionObjects.RoomScroll;
-import de.akricorp.ovonat.actionObjects.StonePaperScissor.Paper;
-import de.akricorp.ovonat.actionObjects.StonePaperScissor.Scissor;
-import de.akricorp.ovonat.actionObjects.StonePaperScissor.Stone;
+
 import de.akricorp.ovonat.repository.DataRepository;
+import de.akricorp.ovonat.repository.MiniGames.StoneScissorPaper;
 
 /**
  * Created by Hannes on 23.07.2015.
  */
 public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
+    private StoneScissorPaper stoneScissorPaperGame;
     private BitmapFactory.Options bitmapFactoryOptions = new BitmapFactory.Options();
     private static GameSettings gameSettings = new GameSettings();
     private MainThread thread;
@@ -43,10 +44,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     private ArrayList<GameObject> kitchenObjects = new ArrayList<>();
     private ArrayList<GameObject> bathRoomObjects = new ArrayList<>();
     private ArrayList<GameObject> outsideObjects = new ArrayList<>();
-    private ArrayList<GameObject> stoneScissorPaperObjects = new ArrayList<>();;
-    private Stone stone;
-    private Scissor scissor;
-    private Paper paper;
     private StoneScissorPaperObject stoneScissorPaperObject;
     private float resolutionControlFactorX;
     private float resolutionControlFactorY;
@@ -128,9 +125,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         resolutionControlFactorX = screenWidth / (float) gameSettings.GAME_WIDTH;
         resolutionControlFactorY = screenHeight/ (float) gameSettings.GAME_HEIGHT;
         createStatusBars();
+        Bitmap[] playerRes = new Bitmap[2];
+        playerRes[0]= BitmapFactory.decodeResource(getResources(), R.drawable.ovo3,bitmapFactoryOptions);
+        playerRes[1] = BitmapFactory.decodeResource(getResources(), R.drawable.eyes3);
+
         room = new Room(BitmapFactory.decodeResource(getResources(), currentRoom,bitmapFactoryOptions), resolutionControlFactorX,resolutionControlFactorY);
-        player = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.ovo3,bitmapFactoryOptions),
-                BitmapFactory.decodeResource(getResources(), R.drawable.eyes3,bitmapFactoryOptions), (int)(100), (int)(100), 3, 300, 150, resolutionControlFactorX, resolutionControlFactorY);
+        player =new Player( playerRes, (int)(100), (int)(100), 3, 300, 150, resolutionControlFactorX, resolutionControlFactorY);
 
 
         roomScroll = new RoomScroll(screenWidth, screenHeight, resolutionControlFactorX,resolutionControlFactorY, BitmapFactory.decodeResource(getResources(), R.drawable.kitchenbutton,bitmapFactoryOptions), BitmapFactory.decodeResource(getResources(), R.drawable.playroombutton), BitmapFactory.decodeResource(getResources(), R.drawable.outsidebutton), BitmapFactory.decodeResource(getResources(), R.drawable.bathbutton));
@@ -150,7 +150,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
     private void playRoomStart() {
         if(stoneScissorPaperObject == null){
-            playRoomObjects.add(stoneScissorPaperObject = new StoneScissorPaperObject(BitmapFactory.decodeResource(getResources(), R.drawable.stonescissorpaper,bitmapFactoryOptions),
+            Bitmap[] stoneScissorPaperObjectRes = new Bitmap[1];
+            stoneScissorPaperObjectRes[0] = BitmapFactory.decodeResource(getResources(), R.drawable.stonescissorpaper,bitmapFactoryOptions);
+            playRoomObjects.add(stoneScissorPaperObject = new StoneScissorPaperObject(stoneScissorPaperObjectRes,
                     (int) (100), (int) (100), 1, 200, 200, resolutionControlFactorX, resolutionControlFactorY));
         }
         state = GameState.PLAYROOM;
@@ -161,11 +163,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
     private void stonePaperStarted() {
         state = GameState.STONEPAPER;
+        stoneScissorPaperGame = new StoneScissorPaper(context, resolutionControlFactorX,resolutionControlFactorY);
         player.setX(400); player.setY(80);
 
-        stoneScissorPaperObjects.add(paper = new Paper(BitmapFactory.decodeResource(getResources(), R.drawable.paper,bitmapFactoryOptions),  100,  100, 1, 350, 300, resolutionControlFactorX,resolutionControlFactorY));
-        stoneScissorPaperObjects.add(stone = new Stone(BitmapFactory.decodeResource(getResources(), R.drawable.stone,bitmapFactoryOptions), 100 , 100, 1, 150, 300, resolutionControlFactorX, resolutionControlFactorY));
-        stoneScissorPaperObjects.add(scissor = new Scissor(BitmapFactory.decodeResource(getResources(), R.drawable.scissor,bitmapFactoryOptions), 100,  100, 1, 550, 300, resolutionControlFactorX,resolutionControlFactorY));
 
 
 
@@ -182,6 +182,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     @Override
+
     public boolean onTouchEvent(MotionEvent event) {
 
 
@@ -222,9 +223,27 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         }
 
 
+        if(stoneScissorPaperGame !=null){
+        for(int i = 0; i < stoneScissorPaperGame.stoneScissorPaperObjects.size();i++){
+
+            if (collision(click, stoneScissorPaperGame.stoneScissorPaperObjects.get(i).getRectangle())) {
+                switch (i){
+                    case 0:
+                        stoneScissorPaperGame.paperUsed();break;
+                    case 1:
+                        stoneScissorPaperGame.stoneUsed();break;
+                    case 3:
+                        stoneScissorPaperGame.scissorUsed();break;
+
+
+
+                }
+
+            }}}
+
+
         return super.onTouchEvent(event);
     }
-
 
     private boolean collision(Rect click, Rect rectangle) {
         if (Rect.intersects(click, rectangle)) {
@@ -262,8 +281,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                 for(GameObject object : outsideObjects){
                     object.hide();
                 }
-                for(GameObject object : stoneScissorPaperObjects){
-                    object.hide();}
+                stoneScissorPaperGame = null;
                 currentRoom = R.drawable.kitchen;
                 break;
             case PLAYROOM:
@@ -279,8 +297,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                 for(GameObject object : outsideObjects){
                     object.hide();
                 }
-                for(GameObject object : stoneScissorPaperObjects){
-                    object.hide();}
+                stoneScissorPaperGame = null;
                 currentRoom = R.drawable.playroom;
                 break;
             case STONEPAPER:
@@ -296,8 +313,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                 for(GameObject object : outsideObjects){
                     object.hide();
                 }
-                for(GameObject object : stoneScissorPaperObjects){
-                    object.show();}
+
                 currentRoom = R.drawable.stonepaperroom;
                 break;
             case BATH:
@@ -313,8 +329,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                 for(GameObject object : outsideObjects){
                     object.hide();
                 }
-                for(GameObject object : stoneScissorPaperObjects){
-                    object.hide();}
+                stoneScissorPaperGame = null;
                 currentRoom = R.drawable.latest;
                 break;
             case OUTSIDE:
@@ -331,8 +346,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                     object.show();
 
                 }
-                for(GameObject object : stoneScissorPaperObjects){
-                    object.hide();}
+                stoneScissorPaperGame = null;
                 currentRoom = R.drawable.room2;
                 break;
 
@@ -362,9 +376,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
             roomScroll.draw(canvas);
             drawStatusBars(canvas);
-            scissor.draw(canvas);
-            stone.draw(canvas);
-            paper.draw(canvas);
+            if(stoneScissorPaperGame != null){
+            stoneScissorPaperGame.draw(canvas);}
 
 
             canvas.restoreToCount(savedState);

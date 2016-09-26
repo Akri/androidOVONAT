@@ -13,25 +13,12 @@ import de.akricorp.ovonat.GameObject;
 
 public class StoneScissorPaperObject extends GameObject {
 
-    Bitmap spritesheed;
+
     private Animation animation = new Animation();
 
-    public StoneScissorPaperObject(Bitmap res, int w, int h, int numFrames,int positionX, int positionY,float resolutionControlFactorX,float resolutionControlFactorY)
-    {super(positionX,positionY,w,h, resolutionControlFactorX, resolutionControlFactorY);
+    public StoneScissorPaperObject(Bitmap[] res, int w, int h, int numFrames,int positionX, int positionY,float resolutionControlFactorX,float resolutionControlFactorY)
+    {super(res,positionX,positionY,w,h, resolutionControlFactorX, resolutionControlFactorY, numFrames);
 
-        isShown = true;
-
-
-        Bitmap[] image = new Bitmap[numFrames];
-        spritesheed = res;
-
-        for(int i = 0; i < image.length;i++)
-        {
-            image[i] = Bitmap.createScaledBitmap(spritesheed,  width/2, height/2,false);
-        }
-
-        animation.setFrames(image);
-        animation.setDelay(10);
 
     }
 

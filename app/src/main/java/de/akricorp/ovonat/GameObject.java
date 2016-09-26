@@ -1,12 +1,16 @@
 package de.akricorp.ovonat;
 
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.Log;
+
+import static android.R.attr.animation;
 
 /**
  * Created by Hannes on 29.07.2015.
  */
-public abstract class GameObject {
+public  class GameObject {
     protected int originalX; //x value for standart screenWidth
     protected int originalY; //y value for standart screenWHeight
     public int x;
@@ -17,11 +21,13 @@ public abstract class GameObject {
     protected int height;
     private float resolutionControlFactorX;
     private float resolutionControlFactorY;
+    private Animation animation = new Animation();
+    Bitmap spritesheed;
 
 
     public boolean isShown;
 
-    public GameObject(int positionX,int positionY,int w,int h, float resolutionControlFactorX,float resolutionControlFactorY){
+    public GameObject(Bitmap[] res,int positionX,int positionY,int w,int h, float resolutionControlFactorX,float resolutionControlFactorY, int numFrames){
         originalHeight =h;
         originalWidth = w;
         this.resolutionControlFactorX = resolutionControlFactorX;
@@ -32,6 +38,21 @@ public abstract class GameObject {
         this.originalX = positionX;
         this.originalY = positionY;
         newScale(resolutionControlFactorX, resolutionControlFactorY);
+
+        isShown = true;
+
+
+        Bitmap[] image = new Bitmap[numFrames];
+
+
+        for(int i = 0; i < image.length;i++)
+        {   spritesheed = res[i];
+            image[i] = Bitmap.createScaledBitmap(spritesheed,  width/2, height/2,false);
+        }
+
+        animation.setFrames(image);
+        animation.setDelay(10);
+
 
     }
 
@@ -87,4 +108,16 @@ public abstract class GameObject {
     public void show(){
         isShown = true;
     }
+
+    public void draw(Canvas canvas)
+    {  if(isShown){
+
+
+
+
+        canvas.drawBitmap(animation.getImage(), x, y, null); }
+
+    }
+
+
 }

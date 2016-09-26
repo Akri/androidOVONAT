@@ -17,15 +17,15 @@ public class Player extends GameObject{
     private Animation eyesAnimation = new Animation();
     float resolutionControlFactor;
 
-    public Player(Bitmap body, Bitmap eyes,int w, int h, int numFrames, int positionX, int positionY,float resolutionControlFactorX,float resolutionControlFactorY)
-    {super(positionX,positionY,w,h, resolutionControlFactorX,resolutionControlFactorY);
+    public Player(Bitmap[] res, int w, int h, int numFrames, int positionX, int positionY,float resolutionControlFactorX,float resolutionControlFactorY)
+    {super(res,positionX,positionY,w,h, resolutionControlFactorX,resolutionControlFactorY,numFrames);
         Log.d("player", "x: "+x);
         Log.d("player", "y: "+y);
         this.resolutionControlFactor = resolutionControlFactor;
         Bitmap[] bodyImage = new Bitmap[numFrames];
         Bitmap[] eyesImage = new Bitmap[numFrames];
-        this.body = body;
-        this.eyes = eyes;
+        this.body = res[0];
+        this.eyes = res[1];
 
         for(int i = 0; i < bodyImage.length;i++)   //eiglt gilt es für alle images also bodyImage vllt falsche variable
         {
@@ -53,6 +53,8 @@ public class Player extends GameObject{
         bodyAnimation.update();
         eyesAnimation.update();
     }
+
+    @Override
     public void draw(Canvas canvas)
     {
 
