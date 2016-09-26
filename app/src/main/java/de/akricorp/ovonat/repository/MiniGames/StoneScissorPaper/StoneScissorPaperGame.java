@@ -1,4 +1,4 @@
-package de.akricorp.ovonat.repository.MiniGames;
+package de.akricorp.ovonat.repository.MiniGames.StoneScissorPaper;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -16,16 +16,18 @@ import de.akricorp.ovonat.R;
 /**
  * Created by Hannes on 25.08.2015.
  */
-public class StoneScissorPaper extends Object {
+public class StoneScissorPaperGame extends Object {
 
     private BitmapFactory.Options bitmapFactoryOptions = new BitmapFactory.Options();
 
-    int ovoWinCount=0;
-    int playerWinCount=0;
-    int drawCount=0;
-    private GameObject stone;
-    private GameObject scissor;
-    private GameObject paper;
+    private int ovoWinCount=0;
+    private int playerWinCount=0;
+    private int drawCount=0;
+    ScoreBoard scoreBoard;
+    public boolean gameWon = false;
+    public boolean gameLost = false;
+
+
 
 
     public ArrayList<GameObject> stoneScissorPaperObjects = new ArrayList<>();
@@ -36,18 +38,18 @@ public class StoneScissorPaper extends Object {
 
     Random r = new Random();
 
-    public StoneScissorPaper(Context context, float resolutionControlFactorX,float resolutionControlFactorY){
+    public StoneScissorPaperGame(Context context, float resolutionControlFactorX, float resolutionControlFactorY){
         bitmapFactoryOptions.inScaled = false;
         Bitmap[] paperRes = new Bitmap[1];
         paperRes[0] = BitmapFactory.decodeResource(context.getResources(), R.drawable.paper,bitmapFactoryOptions);
-        stoneScissorPaperObjects.add(paper = new GameObject(paperRes,  100,  100,  350, 300, resolutionControlFactorX,resolutionControlFactorY,1));
+        stoneScissorPaperObjects.add(new GameObject(paperRes,   350, 300,100,  100,  resolutionControlFactorX,resolutionControlFactorY,1));
         Bitmap[] stoneRes = new Bitmap[1];
         stoneRes[0] = BitmapFactory.decodeResource(context.getResources(), R.drawable.stone,bitmapFactoryOptions);
-        stoneScissorPaperObjects.add(stone = new GameObject(stoneRes, 100 , 100, 150, 300, resolutionControlFactorX, resolutionControlFactorY,1));
+        stoneScissorPaperObjects.add(new GameObject(stoneRes,  150, 300,100 , 100, resolutionControlFactorX, resolutionControlFactorY,1));
         Bitmap[] scissorRes = new Bitmap[1];
         scissorRes[0] = BitmapFactory.decodeResource(context.getResources(), R.drawable.scissor,bitmapFactoryOptions);
-        stoneScissorPaperObjects.add(scissor = new GameObject(scissorRes, 100,  100, 550, 300, resolutionControlFactorX,resolutionControlFactorY,1));
-
+        stoneScissorPaperObjects.add(new GameObject(scissorRes,550, 300, 100,  100,  resolutionControlFactorX,resolutionControlFactorY,1));
+        scoreBoard = new ScoreBoard(context,250,80,resolutionControlFactorX,resolutionControlFactorY);
     }
 
 
@@ -99,29 +101,44 @@ public class StoneScissorPaper extends Object {
     }
 
     private int ovoRandom() {
-        int ovoChoice = r.nextInt(2);
+        int ovoChoice = r.nextInt(3);
         return ovoChoice;
     }
 
     private void ovoWinUpdate() {
         ovoWinCount++;
+        scoreBoard.updateScore(playerWinCount, ovoWinCount);
+        checkForFinish();
     }
 
     private void updatePlayerCount() {
         playerWinCount++;
+        scoreBoard.updateScore(playerWinCount, ovoWinCount);
+        checkForFinish();
     }
 
     private void updateDrawCount() {
         drawCount++;
+
     }
 
+   private void checkForFinish(){
+       if(ovoWinCount == 20){
+           gameLost = true;
 
+       }
+       if(playerWinCount == 20){gameWon = true;
+   }}
 
     public void draw(Canvas canvas){
-
+        if(!gameWon && !gameLost){
         for(int i = 0; i < stoneScissorPaperObjects.size();i++){
             stoneScissorPaperObjects.get(i).draw(canvas);
+
         }
+         scoreBoard.draw(canvas);
+
+    }
 
     }
 

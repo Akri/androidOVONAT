@@ -31,12 +31,12 @@ public class StatusBar {
         yPosition = (int)(yPosition*resolutionControlFactorY);
         barHeight = (int)(barHeight*resolutionControlFactorY);
         barWidth = (int)(barWidth*resolutionControlFactorX);
-        setValue(maxValue-value);
+        setValue(value);
         xPosition += position*barOffset*resolutionControlFactorX;
         setupVisualisation();
     }
     public void setValue(int value){
-        currentValue = value;
+        currentValue = maxValue-value;
     }
     public int getValue(){
         return currentValue;
@@ -51,6 +51,10 @@ public class StatusBar {
         barPaint.setColor(Color.RED);
         barPaint.setStrokeWidth(1);
         barPaint.setStyle(Paint.Style.FILL);
+    }
+
+    public void update(){
+        bar.set(xPosition, yPosition + currentValue * barHeight / maxValue, xPosition + barWidth, yPosition + barHeight);
     }
 
 

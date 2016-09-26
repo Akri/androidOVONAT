@@ -46,7 +46,7 @@ public class DataRepository {
 
     public static final String KEY_FOOD_SATURATION = "foodSaturation";
     public static final String KEY_HYGENE = "hygene";
-    public static final String KEY_HEALTH = "health";
+    public static final String KEY_FUN = "fun";
 
 
 
@@ -58,7 +58,7 @@ public class DataRepository {
     public static final int CURRENT_BODY_INDEX = 5;
     public static final int KEY_FOOD_SATURATION_INDEX = 6;
     public static final int HYGENE_INDEX = 7;
-    public static final int HEALTH_INDEX = 8;
+    public static final int FUN_INDEX = 8;
 
 
     private DataDBOpenHelper dbHelper;
@@ -136,7 +136,7 @@ public class DataRepository {
         String returnString="";
         Cursor cursorSettings = db.query(DATABASE_TABLE, new String[]{KEY_FIRST_START_TIME,
                 KEY_LAST_CLOSE_TIME,KEY_MINI_COUNT,KEY_CURRENT_BOOTS, KEY_CURRENT_HAIR,
-                KEY_CURRENT_BODY, KEY_FOOD_SATURATION, KEY_HYGENE, KEY_HEALTH}, null, null, null, null, null);
+                KEY_CURRENT_BODY, KEY_FOOD_SATURATION, KEY_HYGENE, KEY_FUN}, null, null, null, null, null);
         cursorSettings.moveToFirst();
 
         switch(requestedData) {
@@ -167,8 +167,8 @@ public class DataRepository {
             case "hygene":
                 returnString = cursorSettings.getString(HYGENE_INDEX);
                 break;
-            case "health":
-                returnString = cursorSettings.getString(HEALTH_INDEX);
+            case "fun":
+                returnString = cursorSettings.getString(FUN_INDEX);
                 break;
         }
         return returnString;
@@ -207,8 +207,8 @@ public class DataRepository {
             case "hygene":
                 cv.put(KEY_HYGENE, newValue);
                 return db.update(DATABASE_TABLE, cv, null, null);
-            case "health":
-                cv.put(KEY_HEALTH, newValue);
+            case "fun":
+                cv.put(KEY_FUN, newValue);
                 return db.update(DATABASE_TABLE, cv, null, null);
         }
         return 0;
@@ -232,7 +232,7 @@ public class DataRepository {
                 + " INTEGER primary key autoincrement, " + KEY_FIRST_START_TIME + " text, "
                 + KEY_LAST_CLOSE_TIME + " text, " + KEY_MINI_COUNT +  " text ," + KEY_CURRENT_BOOTS + " text, "
                 + KEY_CURRENT_HAIR + " text, " + KEY_CURRENT_BODY + " text, "
-                + KEY_FOOD_SATURATION +" text, "+ KEY_HYGENE +" text , "+ KEY_HEALTH +" text);";
+                + KEY_FOOD_SATURATION +" text, "+ KEY_HYGENE +" text , "+ KEY_FUN +" text);";
 
 
 
@@ -264,7 +264,7 @@ public class DataRepository {
 
         Cursor cursor = db.query(DATABASE_TABLE, new String[]{KEY_FIRST_START_TIME,
                 KEY_LAST_CLOSE_TIME,KEY_MINI_COUNT,KEY_CURRENT_BOOTS, KEY_CURRENT_HAIR,
-                KEY_CURRENT_BODY, KEY_FOOD_SATURATION, KEY_HYGENE, KEY_HEALTH}, null, null, null, null, null);
+                KEY_CURRENT_BODY, KEY_FOOD_SATURATION, KEY_HYGENE, KEY_FUN}, null, null, null, null, null);
 
 
 
@@ -278,7 +278,7 @@ public class DataRepository {
             firstOvoValues.put(KEY_CURRENT_BODY, "6");
             firstOvoValues.put(KEY_FOOD_SATURATION, "7");
             firstOvoValues.put(KEY_HYGENE, "8");
-            firstOvoValues.put(KEY_HEALTH, "9");
+            firstOvoValues.put(KEY_FUN, "9");
             db.insert(DATABASE_TABLE, null, firstOvoValues);
         }
 

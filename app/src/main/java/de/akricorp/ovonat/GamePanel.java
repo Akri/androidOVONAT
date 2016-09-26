@@ -7,12 +7,10 @@ import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.graphics.Canvas;
 import android.view.SurfaceView;
-import android.view.WindowManager;
 
 import java.util.ArrayList;
 
@@ -22,14 +20,14 @@ import de.akricorp.ovonat.actionObjects.Playroom.StoneScissorPaperObject;
 import de.akricorp.ovonat.actionObjects.RoomScroll;
 
 import de.akricorp.ovonat.repository.DataRepository;
-import de.akricorp.ovonat.repository.MiniGames.StoneScissorPaper;
+import de.akricorp.ovonat.repository.MiniGames.StoneScissorPaper.StoneScissorPaperGame;
 
 /**
  * Created by Hannes on 23.07.2015.
  */
 public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
-    private StoneScissorPaper stoneScissorPaperGame;
+    private StoneScissorPaperGame stoneScissorPaperGame;
     private BitmapFactory.Options bitmapFactoryOptions = new BitmapFactory.Options();
     private static GameSettings gameSettings = new GameSettings();
     private MainThread thread;
@@ -47,13 +45,13 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     private StoneScissorPaperObject stoneScissorPaperObject;
     private float resolutionControlFactorX;
     private float resolutionControlFactorY;
-    StatusBar healthBar;
+    StatusBar funBar;
     StatusBar hygeneBar;
     StatusBar saturationBar;
     DataRepository repository;
     Context context;
     ArrayList<StatusBar> statusBarArrayList = new ArrayList<>();
-
+    boolean currentWaitingProcess = false;
     public enum GameState {OUTSIDE, KITCHEN, PLAYROOM, BATH, STONEPAPER}
 
     GameState state = GameState.PLAYROOM;
@@ -75,6 +73,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     private void initDb(Context context) {
+
         repository = new DataRepository(context);
         repository.open();
         repository.firstSetup();
@@ -127,7 +126,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         createStatusBars();
         Bitmap[] playerRes = new Bitmap[2];
         playerRes[0]= BitmapFactory.decodeResource(getResources(), R.drawable.ovo3,bitmapFactoryOptions);
-        playerRes[1] = BitmapFactory.decodeResource(getResources(), R.drawable.eyes3);
+        playerRes[1] = BitmapFactory.decodeResource(getResources(), R.drawable.eyes3,bitmapFactoryOptions);
 
         room = new Room(BitmapFactory.decodeResource(getResources(), currentRoom,bitmapFactoryOptions), resolutionControlFactorX,resolutionControlFactorY);
         player =new Player( playerRes, (int)(100), (int)(100), 3, 300, 150, resolutionControlFactorX, resolutionControlFactorY);
@@ -163,8 +162,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
     private void stonePaperStarted() {
         state = GameState.STONEPAPER;
-        stoneScissorPaperGame = new StoneScissorPaper(context, resolutionControlFactorX,resolutionControlFactorY);
-        player.setX(400); player.setY(80);
+        stoneScissorPaperGame = new StoneScissorPaperGame(context, resolutionControlFactorX,resolutionControlFactorY);
+        player.setX(400); player.setY(150);
 
 
 
@@ -175,8 +174,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     private void createStatusBars() {
         hygeneBar = new StatusBar(resolutionControlFactorX,resolutionControlFactorY, Integer.parseInt(repository.getData("hygene")), 1);
         statusBarArrayList.add(hygeneBar);
-        healthBar = new StatusBar(resolutionControlFactorX,resolutionControlFactorY, Integer.parseInt(repository.getData("health")), 2);
-        statusBarArrayList.add(healthBar);
+        funBar = new StatusBar(resolutionControlFactorX,resolutionControlFactorY, Integer.parseInt(repository.getData("fun")), 2);
+        statusBarArrayList.add(funBar);
         saturationBar = new StatusBar(resolutionControlFactorX,resolutionControlFactorY, Integer.parseInt(repository.getData("foodSaturation")), 3);
         statusBarArrayList.add(saturationBar);
     }
@@ -224,15 +223,16 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
 
         if(stoneScissorPaperGame !=null){
-        for(int i = 0; i < stoneScissorPaperGame.stoneScissorPaperObjects.size();i++){
+        for(int i = 0; i < stoneScissorPaperGame.stoneScissorPaperObjects.size(); i++){
 
-            if (collision(click, stoneScissorPaperGame.stoneScissorPaperObjects.get(i).getRectangle())) {
+            if (collision(click, stoneScissorPaperGame.stoneScissorPaperObjects.get(i).getRectangle())&& !stoneScissorPaperGame.gameWon && !stoneScissorPaperGame.gameLost) {
+                Log.d("SSPText", i+"");
                 switch (i){
                     case 0:
                         stoneScissorPaperGame.paperUsed();break;
                     case 1:
                         stoneScissorPaperGame.stoneUsed();break;
-                    case 3:
+                    case 2:
                         stoneScissorPaperGame.scissorUsed();break;
 
 
@@ -253,13 +253,33 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     }
 
 
-    public void update() {
+    public void update() throws InterruptedException {
 
 
         if (player.getPlaying()) {
             room.update(BitmapFactory.decodeResource(getResources(), currentRoom,bitmapFactoryOptions));
             player.update();
         }
+        if(state == GameState.STONEPAPER && stoneScissorPaperGame!= null){
+            Log.d("SSPTest", "in 1");
+            if((stoneScissorPaperGame.gameWon || stoneScissorPaperGame.gameLost)&& !currentWaitingProcess){
+                Log.d("SSPTest", "in 2");
+                if(stoneScissorPaperGame.gameWon){
+                    repository.putIntoDb("fun","10");
+                    statusBarArrayList.get(1).setValue(Integer.parseInt(repository.getData("fun")));
+                    statusBarArrayList.get(1).update(); }
+                currentWaitingProcess = true;
+                thread.sleep(3000);
+                currentWaitingProcess = false;
+                playRoomStart();
+                stoneScissorPaperGame = null;
+
+
+            }
+
+        }
+
+
 
 
     }

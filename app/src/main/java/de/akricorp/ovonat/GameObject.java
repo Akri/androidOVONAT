@@ -21,8 +21,10 @@ public  class GameObject {
     protected int height;
     private float resolutionControlFactorX;
     private float resolutionControlFactorY;
-    private Animation animation = new Animation();
-    Bitmap spritesheed;
+    private Animation[] animation;
+    Bitmap spritesheed[];
+    Bitmap[] res;
+    Bitmap[][] resParts;
 
 
     public boolean isShown;
@@ -34,27 +36,30 @@ public  class GameObject {
         this.resolutionControlFactorY = resolutionControlFactorY;
         height = (int)(h*resolutionControlFactorY);
         width =(int)( w*resolutionControlFactorX);
-
+        this.res = new Bitmap[res.length];
+        animation = new Animation[res.length];
         this.originalX = positionX;
         this.originalY = positionY;
         newScale(resolutionControlFactorX, resolutionControlFactorY);
-
+        resParts = new Bitmap[res.length][numFrames];
         isShown = true;
 
 
-        Bitmap[] image = new Bitmap[numFrames];
+       // i*originalWidth,0, originalWidth,originalHeight
 
-
-        for(int i = 0; i < image.length;i++)
-        {   spritesheed = res[i];
-            image[i] = Bitmap.createScaledBitmap(spritesheed,  width/2, height/2,false);
+        for(int j =0; j<res.length;j++){
+            this.res[j] = res[j];
+        for(int i = 0; i < numFrames;i++)
+        {
+            resParts[j][i] = Bitmap.createBitmap(res[j],i*originalWidth,0, originalWidth,originalHeight);
+        }
+        for(int y =0 ; y <res.length; y++) {
+            animation[y] = new Animation();
+            animation[y].setFrames(resParts[y]);
+            animation[y].setDelay(100);
         }
 
-        animation.setFrames(image);
-        animation.setDelay(10);
-
-
-    }
+    }}
 
     public void setX(int newX)
     {
@@ -109,14 +114,21 @@ public  class GameObject {
         isShown = true;
     }
 
+    public void update(){
+        for(int i = 0; i < res.length;i++){
+            animation[i].update();
+        }
+    }
+
     public void draw(Canvas canvas)
-    {  if(isShown){
+    {  if(isShown) {
 
 
+        for (int i = 0; i < res.length; i++) {
+            canvas.drawBitmap(Bitmap.createScaledBitmap(animation[i].getImage(),width/2,height/2,false),x,y,null);
 
-
-        canvas.drawBitmap(animation.getImage(), x, y, null); }
-
+        }
+    }
     }
 
 

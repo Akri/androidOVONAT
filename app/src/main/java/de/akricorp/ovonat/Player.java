@@ -21,25 +21,8 @@ public class Player extends GameObject{
     {super(res,positionX,positionY,w,h, resolutionControlFactorX,resolutionControlFactorY,numFrames);
         Log.d("player", "x: "+x);
         Log.d("player", "y: "+y);
-        this.resolutionControlFactor = resolutionControlFactor;
-        Bitmap[] bodyImage = new Bitmap[numFrames];
-        Bitmap[] eyesImage = new Bitmap[numFrames];
-        this.body = res[0];
-        this.eyes = res[1];
-
-        for(int i = 0; i < bodyImage.length;i++)   //eiglt gilt es für alle images also bodyImage vllt falsche variable
-        {
 
 
-            bodyImage[i] = Bitmap.createBitmap(body,i*originalWidth,0, originalWidth,originalHeight);
-            eyesImage[i] = Bitmap.createBitmap(eyes, i*originalWidth,0, originalWidth,originalHeight);
-            Log.d("bilder",""+i+". :"+bodyImage[i]);
-        }
-
-        bodyAnimation.setFrames(bodyImage);
-        eyesAnimation.setFrames(eyesImage);
-        bodyAnimation.setDelay(100);
-        eyesAnimation.setDelay(100);
 
     }
 
@@ -48,20 +31,10 @@ public class Player extends GameObject{
 
     }
 
-    public void update()
-    {
-        bodyAnimation.update();
-        eyesAnimation.update();
-    }
 
-    @Override
-    public void draw(Canvas canvas)
-    {
 
-        canvas.drawBitmap(Bitmap.createScaledBitmap(bodyAnimation.getImage(),width/2,height/2,false),x,y,null);
-        canvas.drawBitmap(Bitmap.createScaledBitmap(eyesAnimation.getImage(),width/2,height/2,false),x,y,null);
 
-    }
+
 
     public void setPlaying(boolean b){playing = b;}
     public boolean getPlaying(){return playing;}

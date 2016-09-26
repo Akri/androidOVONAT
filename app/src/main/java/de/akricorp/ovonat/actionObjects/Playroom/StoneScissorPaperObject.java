@@ -28,15 +28,6 @@ public class StoneScissorPaperObject extends GameObject {
     {
        if(isShown){ animation.update();}
     }
-    public void draw(Canvas canvas)
-    {  if(isShown){
-
-
-
-
-        canvas.drawBitmap(animation.getImage(), x, y, null); }
-
-    }
 
     @Override
     public void clickReaction(){//open fridge menu
