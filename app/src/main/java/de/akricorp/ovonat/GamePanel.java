@@ -264,12 +264,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
             Log.d("SSPTest", "in 1");
             if((stoneScissorPaperGame.gameWon || stoneScissorPaperGame.gameLost)&& !currentWaitingProcess){
                 Log.d("SSPTest", "in 2");
-                if(stoneScissorPaperGame.gameWon){
+
                     repository.putIntoDb("fun","10");
                     statusBarArrayList.get(1).setValue(Integer.parseInt(repository.getData("fun")));
-                    statusBarArrayList.get(1).update(); }
+                    statusBarArrayList.get(1).update();
                 currentWaitingProcess = true;
-                thread.sleep(3000);
+                thread.sleep(5000);
                 currentWaitingProcess = false;
                 playRoomStart();
                 stoneScissorPaperGame = null;

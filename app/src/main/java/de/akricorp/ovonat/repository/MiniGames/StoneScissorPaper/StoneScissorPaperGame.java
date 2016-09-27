@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import de.akricorp.ovonat.GameObject;
+import de.akricorp.ovonat.GameSettings;
 import de.akricorp.ovonat.R;
 
 
@@ -26,6 +27,9 @@ public class StoneScissorPaperGame extends Object {
     ScoreBoard scoreBoard;
     public boolean gameWon = false;
     public boolean gameLost = false;
+    Bitmap winScreen;
+    Bitmap loseScreen;
+    GameSettings gameSettings = new GameSettings();
 
 
 
@@ -39,7 +43,14 @@ public class StoneScissorPaperGame extends Object {
     Random r = new Random();
 
     public StoneScissorPaperGame(Context context, float resolutionControlFactorX, float resolutionControlFactorY){
+
+
         bitmapFactoryOptions.inScaled = false;
+        winScreen =  BitmapFactory.decodeResource(context.getResources(), R.drawable.winnerscreen,bitmapFactoryOptions);
+        winScreen =  Bitmap.createScaledBitmap(winScreen,(int)(gameSettings.GAME_WIDTH*resolutionControlFactorX),(int)(gameSettings.GAME_HEIGHT*resolutionControlFactorY),false);
+        loseScreen =  BitmapFactory.decodeResource(context.getResources(), R.drawable.loserscreen,bitmapFactoryOptions);
+        loseScreen =  Bitmap.createScaledBitmap(loseScreen,(int)(gameSettings.GAME_WIDTH*resolutionControlFactorX),(int)(gameSettings.GAME_HEIGHT*resolutionControlFactorY),false);
+
         Bitmap[] paperRes = new Bitmap[1];
         paperRes[0] = BitmapFactory.decodeResource(context.getResources(), R.drawable.paper,bitmapFactoryOptions);
         stoneScissorPaperObjects.add(new GameObject(paperRes,   350, 300,100,  100,  resolutionControlFactorX,resolutionControlFactorY,1));
@@ -126,11 +137,12 @@ public class StoneScissorPaperGame extends Object {
        if(ovoWinCount == 20){
            gameLost = true;
 
-       }
+       };
        if(playerWinCount == 20){gameWon = true;
    }}
 
     public void draw(Canvas canvas){
+       Log.d("winlose", "win: "+gameWon+"  lose: "+gameLost);
         if(!gameWon && !gameLost){
         for(int i = 0; i < stoneScissorPaperObjects.size();i++){
             stoneScissorPaperObjects.get(i).draw(canvas);
@@ -139,6 +151,12 @@ public class StoneScissorPaperGame extends Object {
          scoreBoard.draw(canvas);
 
     }
+        if(gameWon){
+            canvas.drawBitmap(winScreen,0,0,null);
+        }
+        if(gameLost){
+            canvas.drawBitmap(loseScreen,0,0,null);
+        }
 
     }
 

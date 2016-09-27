@@ -125,7 +125,7 @@ public  class GameObject {
 
 
         for (int i = 0; i < res.length; i++) {
-            canvas.drawBitmap(Bitmap.createScaledBitmap(animation[i].getImage(),width/2,height/2,false),x,y,null);
+            canvas.drawBitmap(Bitmap.createScaledBitmap(animation[i].getImage(),width,height,false),x,y,null);
 
         }
     }
