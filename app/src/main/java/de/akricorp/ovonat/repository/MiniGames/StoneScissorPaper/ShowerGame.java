@@ -44,9 +44,9 @@ public class ShowerGame  {
     private Sensor mAccelerometer;
     float ovoMoveFactor;
     private Player playerWet;
-    private Bitmap[] playerWetRes = new Bitmap[2];
-    private Player playerNormal;
-    private Bitmap[] playerNormalRes = new Bitmap[2];
+    private Bitmap[] playerWetRes = new Bitmap[3];
+
+
     private Bitmap[] dropRes = new Bitmap[1];
     boolean dropList2Ready = true;
     boolean dropList1Ready = false;
@@ -69,12 +69,12 @@ public class ShowerGame  {
         bitmapFactoryOptions.inScaled = false;
         mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        playerNormalRes[0]=BitmapFactory.decodeResource(context.getResources(), R.drawable.ovo3,bitmapFactoryOptions);
-        playerNormalRes[1] = BitmapFactory.decodeResource(context.getResources(), R.drawable.eyes3,bitmapFactoryOptions);
-        playerWetRes[0]=BitmapFactory.decodeResource(context.getResources(), R.drawable.ovo3wet,bitmapFactoryOptions);
-        playerWetRes[1] = BitmapFactory.decodeResource(context.getResources(), R.drawable.eyes3,bitmapFactoryOptions);
+        playerWetRes[0]=BitmapFactory.decodeResource(context.getResources(), R.drawable.ovo3,bitmapFactoryOptions);
+        playerWetRes[2] = BitmapFactory.decodeResource(context.getResources(), R.drawable.eyes3,bitmapFactoryOptions);
+        playerWetRes[1] = BitmapFactory.decodeResource(context.getResources(), R.drawable.ovo3wetlayer,bitmapFactoryOptions);
+
         playerWet = new Player( playerWetRes, (100), (100), 3, 300, 350, resolutionControlFactorX, resolutionControlFactorY);
-        playerNormal =new Player( playerNormalRes, (100), (100), 3, 300, 350, resolutionControlFactorX, resolutionControlFactorY);
+
         mSensorManager.registerListener(mEventListener,mAccelerometer ,mSensorManager.SENSOR_DELAY_NORMAL);
         fillDropList(dropList1);
     }
@@ -84,15 +84,15 @@ public class ShowerGame  {
 
 
         ovoMoveFactor = mValuesAccel [1];
-        if(playerNormal.getX() < 750*resolutionControlFactorY ){
+        if(playerWet.getX() < 750*resolutionControlFactorY ){
             if(ovoMoveFactor > 0){
             Log.d("MoveFactor", "+1");
-            playerNormal.updateX((int)(10*ovoMoveFactor));
+            playerWet.updateX((int)(10*ovoMoveFactor));
         }}
-        if(playerNormal.getX() > 0 ){
+        if(playerWet.getX() > 0 ){
             if(ovoMoveFactor < 0){
                 Log.d("MoveFactor", "-1");
-                playerNormal.updateX((int)(10*ovoMoveFactor));
+                playerWet.updateX((int)(10*ovoMoveFactor));
             }}}
 
 
@@ -188,7 +188,7 @@ public class ShowerGame  {
     public void dropCollisionCheck(){
         if(dropList1Fall){
             for(int i = 0; i < dropList1.size();i++){
-               if(Rect.intersects(dropList1.get(i).getRectangle(), playerNormal.getRectangle())&&dropList1.get(i).getY()<(int)( 420*resolutionControlFactorY)){
+               if(Rect.intersects(dropList1.get(i).getRectangle(), playerWet.getRectangle())&&dropList1.get(i).getY()<(int)( 420*resolutionControlFactorY)){
                    if(hygiene < 10&& dropList1.get(i).isShown){hygiene++;}
                    dropList1.get(i).hide();
                 }
@@ -196,7 +196,7 @@ public class ShowerGame  {
         }
         if(dropList2Fall){
             for(int i = 0; i < dropList2.size();i++){
-                if(Rect.intersects(dropList2.get(i).getRectangle(), playerNormal.getRectangle())&&dropList2.get(i).getY()<(int)( 420*resolutionControlFactorY)){
+                if(Rect.intersects(dropList2.get(i).getRectangle(), playerWet.getRectangle())&&dropList2.get(i).getY()<(int)( 420*resolutionControlFactorY)){
                     if(hygiene < 10&& dropList2.get(i).isShown){hygiene++;}
                     dropList2.get(i).hide();
                 }
@@ -214,14 +214,14 @@ public class ShowerGame  {
         ovoController();
         rainDropFall();
         dropCollisionCheck();
-        playerNormal.update();
+        playerWet.update();
     }
 
 
 
 
     public void draw(Canvas canvas) {
-        playerNormal.draw(canvas);
+        playerWet.draw(canvas);
         if(dropList2Ready){
         for(int i = 0;  i < dropList1.size(); i++){
             dropList1.get(i).draw(canvas);

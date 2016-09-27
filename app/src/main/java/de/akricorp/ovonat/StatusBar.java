@@ -1,5 +1,6 @@
 package de.akricorp.ovonat;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -23,10 +24,17 @@ public class StatusBar {
     private Rect bar;
     private float resolutionControlFactorX;
     private float resolutionControlFactorY;
+    private Bitmap icon;
+    private int width;
+    private int height;
 
-    public StatusBar(float resolutionControlFactorX,float resolutionControlFactorY,int value, int position){
+
+    public StatusBar(float resolutionControlFactorX,float resolutionControlFactorY,int value, int position, int w,int h, Bitmap icon){
+        this.icon = icon;
         this.resolutionControlFactorX = resolutionControlFactorX;
         this.resolutionControlFactorY = resolutionControlFactorY;
+        width =(int) (w*resolutionControlFactorX);
+        height = (int)(h*resolutionControlFactorY);
         xPosition = (int)(xPosition*resolutionControlFactorX);
         yPosition = (int)(yPosition*resolutionControlFactorY);
         barHeight = (int)(barHeight*resolutionControlFactorY);
@@ -34,6 +42,7 @@ public class StatusBar {
         setValue(value);
         xPosition += position*barOffset*resolutionControlFactorX;
         setupVisualisation();
+        setupIcon();
     }
     public void setValue(int value){
         currentValue = maxValue-value;
@@ -53,6 +62,12 @@ public class StatusBar {
         barPaint.setStyle(Paint.Style.FILL);
     }
 
+
+    public void setupIcon(){
+        icon = Bitmap.createScaledBitmap(icon,(int)(width*0.8),(int)(height*0.8),false);
+
+    }
+
     public void update(){
         bar.set(xPosition, yPosition + currentValue * barHeight / maxValue, xPosition + barWidth, yPosition + barHeight);
     }
@@ -61,5 +76,6 @@ public class StatusBar {
     public void draw(Canvas canvas){
         canvas.drawRect(bar, barPaint);
         canvas.drawRect(barBorder, barBorderPaint);
+        canvas.drawBitmap(icon,xPosition-(int)(5*resolutionControlFactorX),yPosition-height,null);
     }
 }

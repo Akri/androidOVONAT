@@ -194,11 +194,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     private void createStatusBars() {
-        hygeneBar = new StatusBar(resolutionControlFactorX,resolutionControlFactorY, Integer.parseInt(repository.getData("hygiene")), 1);
+        hygeneBar = new StatusBar(resolutionControlFactorX,resolutionControlFactorY, Integer.parseInt(repository.getData("hygiene")), 1,50,50,(BitmapFactory.decodeResource(getResources(), R.drawable.hygienesymbol ,bitmapFactoryOptions)));
         statusBarArrayList.add(hygeneBar);
-        funBar = new StatusBar(resolutionControlFactorX,resolutionControlFactorY, Integer.parseInt(repository.getData("fun")), 2);
+        funBar = new StatusBar(resolutionControlFactorX,resolutionControlFactorY, Integer.parseInt(repository.getData("fun")), 2,50,50,(BitmapFactory.decodeResource(getResources(), R.drawable.funsymbol ,bitmapFactoryOptions)));
         statusBarArrayList.add(funBar);
-        saturationBar = new StatusBar(resolutionControlFactorX,resolutionControlFactorY, Integer.parseInt(repository.getData("foodSaturation")), 3);
+        saturationBar = new StatusBar(resolutionControlFactorX,resolutionControlFactorY, Integer.parseInt(repository.getData("foodSaturation")), 3,50,50,(BitmapFactory.decodeResource(getResources(), R.drawable.hungersymbol ,bitmapFactoryOptions)));
         statusBarArrayList.add(saturationBar);
     }
 
@@ -447,7 +447,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
             player.draw(canvas);
             stoneScissorPaperObject.draw(canvas);
 
-            roomScroll.draw(canvas);
+
             drawStatusBars(canvas);
 
 
@@ -493,6 +493,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                     break;
 
             }
+            roomScroll.draw(canvas);
             canvas.restoreToCount(savedState);
         }
 
