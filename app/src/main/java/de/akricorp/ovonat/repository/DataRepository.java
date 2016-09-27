@@ -45,7 +45,7 @@ public class DataRepository {
     public static final String KEY_CURRENT_BODY = "currentBody";
 
     public static final String KEY_FOOD_SATURATION = "foodSaturation";
-    public static final String KEY_HYGENE = "hygene";
+    public static final String KEY_HYGIENE = "hygiene";
     public static final String KEY_FUN = "fun";
 
 
@@ -57,7 +57,7 @@ public class DataRepository {
     public static final int CURRENT_HAIR_INDEX = 4;
     public static final int CURRENT_BODY_INDEX = 5;
     public static final int KEY_FOOD_SATURATION_INDEX = 6;
-    public static final int HYGENE_INDEX = 7;
+    public static final int HYGIENE_INDEX = 7;
     public static final int FUN_INDEX = 8;
 
 
@@ -136,7 +136,7 @@ public class DataRepository {
         String returnString="";
         Cursor cursorSettings = db.query(DATABASE_TABLE, new String[]{KEY_FIRST_START_TIME,
                 KEY_LAST_CLOSE_TIME,KEY_MINI_COUNT,KEY_CURRENT_BOOTS, KEY_CURRENT_HAIR,
-                KEY_CURRENT_BODY, KEY_FOOD_SATURATION, KEY_HYGENE, KEY_FUN}, null, null, null, null, null);
+                KEY_CURRENT_BODY, KEY_FOOD_SATURATION, KEY_HYGIENE, KEY_FUN}, null, null, null, null, null);
         cursorSettings.moveToFirst();
 
         switch(requestedData) {
@@ -164,8 +164,8 @@ public class DataRepository {
             case "foodSaturation":
                 returnString = cursorSettings.getString(KEY_FOOD_SATURATION_INDEX);
                 break;
-            case "hygene":
-                returnString = cursorSettings.getString(HYGENE_INDEX);
+            case "hygiene":
+                returnString = cursorSettings.getString(HYGIENE_INDEX);
                 break;
             case "fun":
                 returnString = cursorSettings.getString(FUN_INDEX);
@@ -204,8 +204,8 @@ public class DataRepository {
             case "foodSaturation":
                 cv.put(KEY_FOOD_SATURATION, newValue);
                 return db.update(DATABASE_TABLE, cv, null, null);
-            case "hygene":
-                cv.put(KEY_HYGENE, newValue);
+            case "hygiene":
+                cv.put(KEY_HYGIENE, newValue);
                 return db.update(DATABASE_TABLE, cv, null, null);
             case "fun":
                 cv.put(KEY_FUN, newValue);
@@ -232,7 +232,7 @@ public class DataRepository {
                 + " INTEGER primary key autoincrement, " + KEY_FIRST_START_TIME + " text, "
                 + KEY_LAST_CLOSE_TIME + " text, " + KEY_MINI_COUNT +  " text ," + KEY_CURRENT_BOOTS + " text, "
                 + KEY_CURRENT_HAIR + " text, " + KEY_CURRENT_BODY + " text, "
-                + KEY_FOOD_SATURATION +" text, "+ KEY_HYGENE +" text , "+ KEY_FUN +" text);";
+                + KEY_FOOD_SATURATION +" text, "+ KEY_HYGIENE +" text , "+ KEY_FUN +" text);";
 
 
 
@@ -264,7 +264,7 @@ public class DataRepository {
 
         Cursor cursor = db.query(DATABASE_TABLE, new String[]{KEY_FIRST_START_TIME,
                 KEY_LAST_CLOSE_TIME,KEY_MINI_COUNT,KEY_CURRENT_BOOTS, KEY_CURRENT_HAIR,
-                KEY_CURRENT_BODY, KEY_FOOD_SATURATION, KEY_HYGENE, KEY_FUN}, null, null, null, null, null);
+                KEY_CURRENT_BODY, KEY_FOOD_SATURATION, KEY_HYGIENE, KEY_FUN}, null, null, null, null, null);
 
 
 
@@ -277,7 +277,7 @@ public class DataRepository {
             firstOvoValues.put(KEY_CURRENT_HAIR, "5");
             firstOvoValues.put(KEY_CURRENT_BODY, "6");
             firstOvoValues.put(KEY_FOOD_SATURATION, "7");
-            firstOvoValues.put(KEY_HYGENE, "8");
+            firstOvoValues.put(KEY_HYGIENE, "8");
             firstOvoValues.put(KEY_FUN, "9");
             db.insert(DATABASE_TABLE, null, firstOvoValues);
         }

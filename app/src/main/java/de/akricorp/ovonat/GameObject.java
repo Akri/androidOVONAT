@@ -56,7 +56,7 @@ public  class GameObject {
         for(int y =0 ; y <res.length; y++) {
             animation[y] = new Animation();
             animation[y].setFrames(resParts[y]);
-            animation[y].setDelay(100);
+            animation[y].setDelay(150);
         }
 
     }}
@@ -79,6 +79,8 @@ public  class GameObject {
     {
         return this.y;
     }
+    public void updateX(int add){x = x +(int)(add*resolutionControlFactorX);}
+    public void updateY(int add){y = y +(int)(add*resolutionControlFactorY);}
 
     public int getHeight()
     {

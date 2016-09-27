@@ -20,6 +20,7 @@ import de.akricorp.ovonat.actionObjects.Playroom.StoneScissorPaperObject;
 import de.akricorp.ovonat.actionObjects.RoomScroll;
 
 import de.akricorp.ovonat.repository.DataRepository;
+import de.akricorp.ovonat.repository.MiniGames.StoneScissorPaper.ShowerGame;
 import de.akricorp.ovonat.repository.MiniGames.StoneScissorPaper.StoneScissorPaperGame;
 
 /**
@@ -43,6 +44,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     private ArrayList<GameObject> bathRoomObjects = new ArrayList<>();
     private ArrayList<GameObject> outsideObjects = new ArrayList<>();
     private StoneScissorPaperObject stoneScissorPaperObject;
+    private GameObject showerGameObject;
     private float resolutionControlFactorX;
     private float resolutionControlFactorY;
     StatusBar funBar;
@@ -52,8 +54,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     Context context;
     ArrayList<StatusBar> statusBarArrayList = new ArrayList<>();
     boolean currentWaitingProcess = false;
-    public enum GameState {OUTSIDE, KITCHEN, PLAYROOM, BATH, STONEPAPER}
-
+    public enum GameState {OUTSIDE, KITCHEN, PLAYROOM, BATH, STONEPAPER, SHOWERGAME}
+    ShowerGame showerGame;
     GameState state = GameState.PLAYROOM;
 
 
@@ -119,6 +121,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         double screenInches = Math.sqrt(x + y);
         bitmapFactoryOptions.inScaled = false;
 
+
        Log.d("resolution", "x: "+screenWidth+"  y: "+screenHeight);
 
         resolutionControlFactorX = screenWidth / (float) gameSettings.GAME_WIDTH;
@@ -134,7 +137,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
         roomScroll = new RoomScroll(screenWidth, screenHeight, resolutionControlFactorX,resolutionControlFactorY, BitmapFactory.decodeResource(getResources(), R.drawable.kitchenbutton,bitmapFactoryOptions), BitmapFactory.decodeResource(getResources(), R.drawable.playroombutton), BitmapFactory.decodeResource(getResources(), R.drawable.outsidebutton), BitmapFactory.decodeResource(getResources(), R.drawable.bathbutton));
         roomScroll.scrollUp();
-
+        showerGameStarted();
         playRoomStart();
 
         //start gameloop
@@ -155,9 +158,22 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                     (int) (100), (int) (100), 1, 200, 200, resolutionControlFactorX, resolutionControlFactorY));
         }
         state = GameState.PLAYROOM;
+        player.show();
 
 
     }
+
+    private void bathRoomStart() {
+        if(showerGameObject == null){
+            Bitmap[] showerGameObjectRes = new Bitmap[1];
+            showerGameObjectRes[0] = BitmapFactory.decodeResource(getResources(), R.drawable.stonescissorpaper,bitmapFactoryOptions);
+            bathRoomObjects.add(showerGameObject = new StoneScissorPaperObject(showerGameObjectRes,
+                    (int) (100), (int) (100), 1, 200, 200, resolutionControlFactorX, resolutionControlFactorY));
+        }
+        state = GameState.BATH;
+    }
+
+
 
 
     private void stonePaperStarted() {
@@ -171,8 +187,14 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
     }
 
+    private void showerGameStarted() {
+        state = GameState.SHOWERGAME;
+        showerGame = new ShowerGame(context, resolutionControlFactorX, resolutionControlFactorY, Integer.parseInt(repository.getData("hygiene")));
+        player.hide();
+    }
+
     private void createStatusBars() {
-        hygeneBar = new StatusBar(resolutionControlFactorX,resolutionControlFactorY, Integer.parseInt(repository.getData("hygene")), 1);
+        hygeneBar = new StatusBar(resolutionControlFactorX,resolutionControlFactorY, Integer.parseInt(repository.getData("hygiene")), 1);
         statusBarArrayList.add(hygeneBar);
         funBar = new StatusBar(resolutionControlFactorX,resolutionControlFactorY, Integer.parseInt(repository.getData("fun")), 2);
         statusBarArrayList.add(funBar);
@@ -197,13 +219,13 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                         state = GameState.KITCHEN;
                     }
                     if (i == 1) {
-                        state = GameState.PLAYROOM;
+                        playRoomStart();
                     }
                     if (i == 2) {
                         state = GameState.OUTSIDE;
                     }
                     if (i == 3) {
-                        state = GameState.BATH;
+                        bathRoomStart();
                     }
                 }
             }
@@ -215,9 +237,14 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
         }
 
-        if (collision(click, stoneScissorPaperObject.getRectangle())) {
+        if (collision(click, stoneScissorPaperObject.getRectangle())&& stoneScissorPaperObject.isShown) {
 
             stonePaperStarted();
+
+        }
+        if (collision(click, showerGameObject.getRectangle())&& showerGameObject.isShown) {
+
+            showerGameStarted();
 
         }
 
@@ -261,13 +288,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
             player.update();
         }
         if(state == GameState.STONEPAPER && stoneScissorPaperGame!= null){
-            Log.d("SSPTest", "in 1");
-            if((stoneScissorPaperGame.gameWon || stoneScissorPaperGame.gameLost)&& !currentWaitingProcess){
-                Log.d("SSPTest", "in 2");
 
-                    repository.putIntoDb("fun","10");
-                    statusBarArrayList.get(1).setValue(Integer.parseInt(repository.getData("fun")));
-                    statusBarArrayList.get(1).update();
+            if((stoneScissorPaperGame.gameWon || stoneScissorPaperGame.gameLost)&& !currentWaitingProcess){
+                repository.putIntoDb("fun","10");
+                statusBarArrayList.get(1).setValue(Integer.parseInt(repository.getData("fun")));
+                statusBarArrayList.get(1).update();
                 currentWaitingProcess = true;
                 thread.sleep(5000);
                 currentWaitingProcess = false;
@@ -278,10 +303,14 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
             }
 
         }
+        if(state == GameState.SHOWERGAME && showerGame!= null) {
+            showerGame.update();
+            repository.putIntoDb("hygiene", ""+showerGame.hygiene);
+            statusBarArrayList.get(0).setValue(Integer.parseInt(repository.getData("hygiene")));
+            statusBarArrayList.get(0).update();
 
 
-
-
+        }
     }
 
     private void setCurrentBackground() {
@@ -301,6 +330,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                 for(GameObject object : outsideObjects){
                     object.hide();
                 }
+                showerGame = null;
                 stoneScissorPaperGame = null;
                 currentRoom = R.drawable.kitchen;
                 break;
@@ -317,6 +347,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                 for(GameObject object : outsideObjects){
                     object.hide();
                 }
+                showerGame = null;
                 stoneScissorPaperGame = null;
                 currentRoom = R.drawable.playroom;
                 break;
@@ -334,7 +365,26 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                     object.hide();
                 }
 
+                showerGame = null;
                 currentRoom = R.drawable.stonepaperroom;
+                break;
+
+
+            case SHOWERGAME:
+                for(GameObject object : playRoomObjects){
+                    object.hide();
+                }
+                for(GameObject object : kitchenObjects){
+                    object.hide();
+                }
+                for(GameObject object : bathRoomObjects){
+                    object.hide();
+                }
+                for(GameObject object : outsideObjects){
+                    object.hide();
+                }
+                stoneScissorPaperGame = null;
+                currentRoom = R.drawable.latest;
                 break;
             case BATH:
                 for(GameObject object : playRoomObjects){
@@ -349,6 +399,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                 for(GameObject object : outsideObjects){
                     object.hide();
                 }
+                showerGame = null;
                 stoneScissorPaperGame = null;
                 currentRoom = R.drawable.latest;
                 break;
@@ -366,6 +417,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                     object.show();
 
                 }
+                showerGame = null;
                 stoneScissorPaperGame = null;
                 currentRoom = R.drawable.room2;
                 break;
@@ -376,9 +428,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
-        Log.d("currentRoom", ""+currentRoom);
+
+        Log.d("currentRoom", "" + currentRoom);
         setCurrentBackground();
-        Log.d("currentRoom", ""+currentRoom);
+        Log.d("currentRoom", "" + currentRoom);
 
         final float scaleFactorX = 1;
         final float scaleFactorY = 1;
@@ -396,14 +449,53 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
             roomScroll.draw(canvas);
             drawStatusBars(canvas);
-            if(stoneScissorPaperGame != null){
-            stoneScissorPaperGame.draw(canvas);}
 
 
+            switch (state) {
+                case STONEPAPER:
+                    stoneScissorPaperGame.draw(canvas);
+                    break;
+
+                case SHOWERGAME:
+                    showerGame.draw(canvas);
+
+                case KITCHEN:
+
+
+                    for (GameObject object : kitchenObjects) {
+                        object.draw(canvas);
+                    }
+
+
+                case PLAYROOM:
+                    for (GameObject object : playRoomObjects) {
+                        object.draw(canvas);
+                    }
+
+
+                    break;
+
+
+                case BATH:
+
+                    for (GameObject object : bathRoomObjects) {
+                        object.draw(canvas);
+                    }
+                    break;
+
+
+                case OUTSIDE:
+
+                    for (GameObject object : outsideObjects) {
+                        object.draw(canvas);
+
+                    }
+                    break;
+
+            }
             canvas.restoreToCount(savedState);
-
-
         }
+
     }
 
     private void drawStatusBars(Canvas canvas) {
