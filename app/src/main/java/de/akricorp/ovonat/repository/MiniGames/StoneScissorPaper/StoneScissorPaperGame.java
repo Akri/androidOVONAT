@@ -29,7 +29,14 @@ public class StoneScissorPaperGame extends Object {
     public boolean gameLost = false;
     Bitmap winScreen;
     Bitmap loseScreen;
+    Bitmap ovoScissor;
+    Bitmap ovoStone;
+    Bitmap ovoPaper;
     GameSettings gameSettings = new GameSettings();
+    public enum OvosChoice {OVOSTONE, OVOPAPER, OVOSCISSOR, OVONOTHING}
+    float resolutionControlFactorX;
+    float resolutionControlFactorY;
+    OvosChoice ovosChoice = OvosChoice.OVONOTHING;
 
 
 
@@ -43,7 +50,8 @@ public class StoneScissorPaperGame extends Object {
     Random r = new Random();
 
     public StoneScissorPaperGame(Context context, float resolutionControlFactorX, float resolutionControlFactorY){
-
+        this.resolutionControlFactorX = resolutionControlFactorX;
+        this.resolutionControlFactorY= resolutionControlFactorY;
 
         bitmapFactoryOptions.inScaled = false;
         winScreen =  BitmapFactory.decodeResource(context.getResources(), R.drawable.winnerscreen,bitmapFactoryOptions);
@@ -51,9 +59,18 @@ public class StoneScissorPaperGame extends Object {
         loseScreen =  BitmapFactory.decodeResource(context.getResources(), R.drawable.loserscreen,bitmapFactoryOptions);
         loseScreen =  Bitmap.createScaledBitmap(loseScreen,(int)(gameSettings.GAME_WIDTH*resolutionControlFactorX),(int)(gameSettings.GAME_HEIGHT*resolutionControlFactorY),false);
 
+        ovoStone =  BitmapFactory.decodeResource(context.getResources(), R.drawable.rock,bitmapFactoryOptions);
+        ovoStone =  Bitmap.createScaledBitmap(ovoStone,(int)(ovoStone.getWidth()*resolutionControlFactorX*0.6),(int)(ovoStone.getHeight()*resolutionControlFactorY*0.6),false);
+
+        ovoScissor =  BitmapFactory.decodeResource(context.getResources(), R.drawable.scissors,bitmapFactoryOptions);
+        ovoScissor =  Bitmap.createScaledBitmap(ovoScissor,(int)(ovoScissor.getWidth()*resolutionControlFactorX*0.6),(int)(ovoScissor.getHeight()*resolutionControlFactorY*0.6),false);
+
+        ovoPaper =  BitmapFactory.decodeResource(context.getResources(), R.drawable.paper,bitmapFactoryOptions);
+        ovoPaper =  Bitmap.createScaledBitmap(ovoPaper,(int)(ovoPaper.getWidth()*resolutionControlFactorX*0.6),(int)(ovoPaper.getHeight()*resolutionControlFactorY*0.6),false);
+
         Bitmap[] paperRes = new Bitmap[1];
         paperRes[0] = BitmapFactory.decodeResource(context.getResources(), R.drawable.paper,bitmapFactoryOptions);
-        stoneScissorPaperObjects.add(new GameObject(paperRes,   350, 300,100,  100,  resolutionControlFactorX,resolutionControlFactorY,1));
+        stoneScissorPaperObjects.add(new GameObject(paperRes,   350, 300,80,  80,  resolutionControlFactorX,resolutionControlFactorY,1));
         Bitmap[] stoneRes = new Bitmap[1];
         stoneRes[0] = BitmapFactory.decodeResource(context.getResources(), R.drawable.stone,bitmapFactoryOptions);
         stoneScissorPaperObjects.add(new GameObject(stoneRes,  150, 300,100 , 100, resolutionControlFactorX, resolutionControlFactorY,1));
@@ -72,12 +89,15 @@ public class StoneScissorPaperGame extends Object {
         int ovonatsChoice = ovoRandom();
 
         if(ovonatsChoice==STONE){
+            ovosChoice = OvosChoice.OVOSTONE;
             updateDrawCount();
         }
         if(ovonatsChoice==SCISSOR){
+            ovosChoice = OvosChoice.OVOSCISSOR;
             updatePlayerCount();
         }
         if(ovonatsChoice== PAPER){
+            ovosChoice = OvosChoice.OVOPAPER;
             ovoWinUpdate();
         }
     }
@@ -86,12 +106,15 @@ public class StoneScissorPaperGame extends Object {
         int ovonatsChoice = ovoRandom();
 
         if(ovonatsChoice==STONE){
+            ovosChoice = OvosChoice.OVOSTONE;
             ovoWinUpdate();
         }
         if(ovonatsChoice==SCISSOR){
+            ovosChoice = OvosChoice.OVOSCISSOR;
             updateDrawCount();
         }
         if(ovonatsChoice== PAPER){
+            ovosChoice = OvosChoice.OVOPAPER;
             updatePlayerCount();
         }
     }
@@ -101,12 +124,15 @@ public class StoneScissorPaperGame extends Object {
         int ovonatsChoice = ovoRandom();
 
         if(ovonatsChoice==STONE){
+            ovosChoice = OvosChoice.OVOSTONE;
             updatePlayerCount();
         }
         if(ovonatsChoice==SCISSOR){
+            ovosChoice = OvosChoice.OVOSCISSOR;
             ovoWinUpdate();
         }
         if(ovonatsChoice== PAPER){
+            ovosChoice = OvosChoice.OVOPAPER;
             updateDrawCount();
         }
     }
@@ -143,6 +169,17 @@ public class StoneScissorPaperGame extends Object {
 
     public void draw(Canvas canvas){
        Log.d("winlose", "win: "+gameWon+"  lose: "+gameLost);
+
+        switch (ovosChoice) {
+            case OVOPAPER:
+                canvas.drawBitmap(ovoPaper, 380 * resolutionControlFactorX, 160 * resolutionControlFactorY, null);break;
+            case OVOSCISSOR:
+                canvas.drawBitmap(ovoScissor, 380 * resolutionControlFactorX, 160 * resolutionControlFactorY, null);break;
+            case OVOSTONE:
+                canvas.drawBitmap(ovoStone, 380 * resolutionControlFactorX, 160 * resolutionControlFactorY, null);break;
+
+        }
+
         if(!gameWon && !gameLost){
         for(int i = 0; i < stoneScissorPaperObjects.size();i++){
             stoneScissorPaperObjects.get(i).draw(canvas);
