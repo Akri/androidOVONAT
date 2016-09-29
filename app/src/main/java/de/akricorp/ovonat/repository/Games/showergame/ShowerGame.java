@@ -79,7 +79,7 @@ public class ShowerGame  {
 
 
         ovoMoveFactor = mValuesAccel [1];
-        if(playerWet.getX() < 750*resolutionControlFactorY ){
+        if(playerWet.getX() < 700*resolutionControlFactorY ){
             if(ovoMoveFactor > 0){
             Log.d("MoveFactor", "+1");
             playerWet.updateX((int)(10*ovoMoveFactor));
