@@ -3,6 +3,7 @@ package de.akricorp.ovonat;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
@@ -12,6 +13,7 @@ import de.akricorp.ovonat.repository.DataRepository;
 
 public class MainActivity extends Activity {
     DataRepository repository;
+    TimeStatusChanger timeStatusChanger;
     Context context = this;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,12 +21,20 @@ public class MainActivity extends Activity {
         //fullscreen
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.loadscreen_layout);
-        DataRepository repository = new DataRepository(this);  //repository is being created
+        this.repository = new DataRepository(this);  //repository is being created
+        this.timeStatusChanger = new TimeStatusChanger();
+        repository.open();
+        repository.setCursor();
+        Log.d("testreposi",repository.repositoryIsEmpty()+"" );
+        if(repository.repositoryIsEmpty()){
+            repository.firstSetup(timeStatusChanger.getCurrentDate());
+        }
 
         final android.os.Handler handler = new android.os.Handler();  //waiting for the repository to be created to start the game
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                repository.close();
                 setContentView(new GamePanel(context));
 
             }

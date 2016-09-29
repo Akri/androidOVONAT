@@ -73,7 +73,7 @@ public class ShowerGame  {
         playerWetRes[2] = BitmapFactory.decodeResource(context.getResources(), R.drawable.eyes3,bitmapFactoryOptions);
         playerWetRes[1] = BitmapFactory.decodeResource(context.getResources(), R.drawable.ovo3wetlayer,bitmapFactoryOptions);
 
-        playerWet = new Player( playerWetRes, (100), (100), 3, 300, 350, resolutionControlFactorX, resolutionControlFactorY);
+        playerWet = new Player( playerWetRes, (100), (100), 3, 50, 350, resolutionControlFactorX, resolutionControlFactorY);
 
         mSensorManager.registerListener(mEventListener,mAccelerometer ,mSensorManager.SENSOR_DELAY_NORMAL);
         fillDropList(dropList1);
@@ -207,7 +207,7 @@ public class ShowerGame  {
     }
 
 
-    public void update(){
+    public int update(){
         if(timer < timerEnd){timer++;}
         else{timer = 0;}
 
@@ -215,6 +215,7 @@ public class ShowerGame  {
         rainDropFall();
         dropCollisionCheck();
         playerWet.update();
+        return hygiene;
     }
 
 

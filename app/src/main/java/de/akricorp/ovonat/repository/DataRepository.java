@@ -28,15 +28,15 @@ import de.akricorp.ovonat.R;
 public class DataRepository {
 
 
-
+    Cursor cursor;
     private static final String DATABASE_NAME = "ovonatDB.db";
     private static final int DATABASE_VERSION = 1;
 
     private static final String DATABASE_TABLE = "databaseItems";
 
     public static final String KEY_ID = "_id";
-    public static final String KEY_FIRST_START_TIME = "startTime";
-    public static final String KEY_LAST_CLOSE_TIME = "closeTime";
+    public static final String KEY_FIRST_START_TIME = "firstStartTime";
+    public static final String KEY_LAST_CLOSE_TIME = "fastCloseTime";
     public static final String KEY_MINI_COUNT = "miniGameCount";
 
 
@@ -68,6 +68,14 @@ public class DataRepository {
     public DataRepository(Context context) {
         dbHelper = new DataDBOpenHelper(context, DATABASE_NAME, null,
                 DATABASE_VERSION);
+
+
+    }
+
+    public void setCursor(){
+        this.cursor = db.query(DATABASE_TABLE, new String[]{KEY_FIRST_START_TIME,
+                KEY_LAST_CLOSE_TIME,KEY_MINI_COUNT,KEY_CURRENT_BOOTS, KEY_CURRENT_HAIR,
+                KEY_CURRENT_BODY, KEY_FOOD_SATURATION, KEY_HYGIENE, KEY_FUN}, null, null, null, null, null);
 
     }
 
@@ -134,41 +142,39 @@ public class DataRepository {
     public String getData(String requestedData){
 
         String returnString="";
-        Cursor cursorSettings = db.query(DATABASE_TABLE, new String[]{KEY_FIRST_START_TIME,
-                KEY_LAST_CLOSE_TIME,KEY_MINI_COUNT,KEY_CURRENT_BOOTS, KEY_CURRENT_HAIR,
-                KEY_CURRENT_BODY, KEY_FOOD_SATURATION, KEY_HYGIENE, KEY_FUN}, null, null, null, null, null);
-        cursorSettings.moveToFirst();
+
+        cursor.moveToFirst();
 
         switch(requestedData) {
 
             case "firstStartTime":
-                returnString = cursorSettings.getString(FIRST_START_TIME_INDEX);
+                returnString = cursor.getString(FIRST_START_TIME_INDEX);
 
 
                 return returnString;
             case "lastCloseTime":
-                returnString = cursorSettings.getString(LAST_CLOSE_TIME_INDEX);
+                returnString = cursor.getString(LAST_CLOSE_TIME_INDEX);
                 break;
             case "miniCount":
-                returnString = cursorSettings.getString(MINI_COUNT_INDEX);
+                returnString = cursor.getString(MINI_COUNT_INDEX);
                 break;
             case "boots":
-                returnString = cursorSettings.getString(CURRENT_BOOTS_INDEX);
+                returnString = cursor.getString(CURRENT_BOOTS_INDEX);
                 break;
             case "hair":
-                returnString = cursorSettings.getString(CURRENT_HAIR_INDEX);
+                returnString = cursor.getString(CURRENT_HAIR_INDEX);
                 break;
             case "body":
-                returnString = cursorSettings.getString(CURRENT_BODY_INDEX);
+                returnString = cursor.getString(CURRENT_BODY_INDEX);
                 break;
             case "foodSaturation":
-                returnString = cursorSettings.getString(KEY_FOOD_SATURATION_INDEX);
+                returnString = cursor.getString(KEY_FOOD_SATURATION_INDEX);
                 break;
             case "hygiene":
-                returnString = cursorSettings.getString(HYGIENE_INDEX);
+                returnString = cursor.getString(HYGIENE_INDEX);
                 break;
             case "fun":
-                returnString = cursorSettings.getString(FUN_INDEX);
+                returnString = cursor.getString(FUN_INDEX);
                 break;
         }
         return returnString;
@@ -260,9 +266,9 @@ public class DataRepository {
         File dbFile = context.getDatabasePath(dbName);
         return dbFile.exists();
     }
-    public void firstSetup(){
+    public void firstSetup(String currentDate){
 
-        Cursor cursor = db.query(DATABASE_TABLE, new String[]{KEY_FIRST_START_TIME,
+         cursor = db.query(DATABASE_TABLE, new String[]{KEY_FIRST_START_TIME,
                 KEY_LAST_CLOSE_TIME,KEY_MINI_COUNT,KEY_CURRENT_BOOTS, KEY_CURRENT_HAIR,
                 KEY_CURRENT_BODY, KEY_FOOD_SATURATION, KEY_HYGIENE, KEY_FUN}, null, null, null, null, null);
 
@@ -270,18 +276,30 @@ public class DataRepository {
 
         if(!cursor.moveToFirst()) {
             ContentValues firstOvoValues = new ContentValues();
-            firstOvoValues.put(KEY_FIRST_START_TIME, "" + System.nanoTime());
+            firstOvoValues.put(KEY_FIRST_START_TIME, currentDate );
             firstOvoValues.put(KEY_LAST_CLOSE_TIME, "2");
             firstOvoValues.put(KEY_MINI_COUNT, "3");
             firstOvoValues.put(KEY_CURRENT_BOOTS, "4");
             firstOvoValues.put(KEY_CURRENT_HAIR, "5");
             firstOvoValues.put(KEY_CURRENT_BODY, "6");
-            firstOvoValues.put(KEY_FOOD_SATURATION, "7");
+            firstOvoValues.put(KEY_FOOD_SATURATION, "1");
             firstOvoValues.put(KEY_HYGIENE, "8");
             firstOvoValues.put(KEY_FUN, "9");
             db.insert(DATABASE_TABLE, null, firstOvoValues);
         }
 
+    }
+
+    public boolean repositoryIsEmpty(){
+        if (cursor.moveToFirst())
+        {
+            return false;
+
+        } else
+        {
+            // I AM EMPTY
+            return true;
+        }
     }
 
     public void deleteDb(Context context){

@@ -45,10 +45,20 @@ public class StatusBar {
         setupIcon();
     }
     public void setValue(int value){
+
         currentValue = maxValue-value;
+        if(maxValue-currentValue < 0){currentValue = maxValue;}
+        if(currentValue < 0){currentValue = 0;}
+
+    }
+    public void addValue(int value){
+        currentValue -= value;
+        if(maxValue-currentValue < 0){currentValue = maxValue;}
+        if(currentValue < 0){currentValue = 0;}
+        update();
     }
     public int getValue(){
-        return currentValue;
+        return maxValue - currentValue;
     }
 
     public void setupVisualisation() {
@@ -77,5 +87,6 @@ public class StatusBar {
         canvas.drawRect(bar, barPaint);
         canvas.drawRect(barBorder, barBorderPaint);
         canvas.drawBitmap(icon,xPosition-(int)(5*resolutionControlFactorX),yPosition-height,null);
+        Log.d("bars",""+currentValue);
     }
 }

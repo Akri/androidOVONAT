@@ -22,7 +22,8 @@ public  class GameObject {
     private float resolutionControlFactorX;
     private float resolutionControlFactorY;
     private Animation[] animation;
-    Bitmap spritesheed[];
+    private boolean playing = true;
+
     Bitmap[] res;
     Bitmap[][] resParts;
 
@@ -40,7 +41,7 @@ public  class GameObject {
         animation = new Animation[res.length];
         this.originalX = positionX;
         this.originalY = positionY;
-        newScale(resolutionControlFactorX, resolutionControlFactorY);
+        standartScaling(resolutionControlFactorX, resolutionControlFactorY);
         resParts = new Bitmap[res.length][numFrames];
         isShown = true;
 
@@ -100,7 +101,7 @@ public  class GameObject {
 
 
 
-    public void newScale(float resolutionControlFactorX, float resolutionControlFactorY){
+    public void standartScaling(float resolutionControlFactorX, float resolutionControlFactorY){
         x= (int)((float)originalX*resolutionControlFactorX);
         y = (int)((float)originalY*resolutionControlFactorY);
         Log.d("Positions new scale",this.getClass() + ": x: " + x + ", y: " + y);
@@ -132,6 +133,7 @@ public  class GameObject {
         }
     }
     }
+    public boolean getPlaying(){return playing;}
 
 
 }
