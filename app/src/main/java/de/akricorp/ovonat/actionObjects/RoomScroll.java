@@ -69,14 +69,14 @@ public class RoomScroll   {
         bgPaint.setStrokeWidth(strokeWidth);
         bgPaint.setStyle(Paint.Style.STROKE);
 
-        kitchenButton =  Bitmap.createScaledBitmap(kitchen,(int)(80*resolutionControlFactorX),(int)(80*resolutionControlFactorY),false);
-        roomButtonArrayList.add(kitchenButton);
+        bathButton = Bitmap.createScaledBitmap(bath,(int)(80*resolutionControlFactorX),(int)(80*resolutionControlFactorY),false);
+        roomButtonArrayList.add(bathButton);
         playRoomButton = Bitmap.createScaledBitmap(playRoom,(int)(80*resolutionControlFactorX),(int)(80*resolutionControlFactorY),false);
         roomButtonArrayList.add(playRoomButton);
         outsideButton = Bitmap.createScaledBitmap(outside,(int)(80*resolutionControlFactorX),(int)(80*resolutionControlFactorY),false);
         roomButtonArrayList.add(outsideButton);
-        bathButton = Bitmap.createScaledBitmap(bath,(int)(80*resolutionControlFactorX),(int)(80*resolutionControlFactorY),false);
-        roomButtonArrayList.add(bathButton);
+        kitchenButton =  Bitmap.createScaledBitmap(kitchen,(int)(80*resolutionControlFactorX),(int)(80*resolutionControlFactorY),false);
+        roomButtonArrayList.add(kitchenButton);
         scroll();
 
         Log.d("roomScroll", "screenWidth: "+ canvasWidth);

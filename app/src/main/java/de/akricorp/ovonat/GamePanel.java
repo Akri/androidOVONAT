@@ -42,6 +42,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     private GameObject stoneScissorPaperObject;
     private GameObject showerGameObject;
     private GameObject fridgeObject;
+    private GameObject bathTubeObject;
     private float resolutionControlFactorX;
     private float resolutionControlFactorY;
     StatusBar funBar;
@@ -226,20 +227,20 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
 
     public void initActionObjects(){
-        Bitmap[] showerGameObjectRes = new Bitmap[1];
-        showerGameObjectRes[0] = BitmapFactory.decodeResource(getResources(), R.drawable.stonescissorpaper,bitmapFactoryOptions);
-        bathRoomObjects.add(showerGameObject = new GameObject(showerGameObjectRes,
-                200, 200,  100,100, resolutionControlFactorX, resolutionControlFactorY,1));
-
         Bitmap[] fridgeObjectRes = new Bitmap[1];
-        fridgeObjectRes[0] = BitmapFactory.decodeResource(getResources(), R.drawable.fridge,bitmapFactoryOptions);
+        fridgeObjectRes[0] = BitmapFactory.decodeResource(getResources(), R.drawable.fridgeglow,bitmapFactoryOptions);
         kitchenObjects.add(fridgeObject = new GameObject(fridgeObjectRes,
-                 25,  90,  300, 345, resolutionControlFactorX, resolutionControlFactorY,1));
+                 25,  90,  300, 345, resolutionControlFactorX, resolutionControlFactorY,4));
 
         Bitmap[] stoneScissorPaperObjectRes = new Bitmap[1];
-        stoneScissorPaperObjectRes[0] = BitmapFactory.decodeResource(getResources(), R.drawable.sspicon,bitmapFactoryOptions);
+        stoneScissorPaperObjectRes[0] = BitmapFactory.decodeResource(getResources(), R.drawable.sspglowicon,bitmapFactoryOptions);
         playRoomObjects.add(stoneScissorPaperObject = new GameObject(stoneScissorPaperObjectRes,
-                600, 220, 75, 100, resolutionControlFactorX, resolutionControlFactorY,1));
+                600, 220, 75, 100, resolutionControlFactorX, resolutionControlFactorY,4));
+
+        Bitmap[] showerObjectRes = new Bitmap[1];
+        showerObjectRes[0] = BitmapFactory.decodeResource(getResources(), R.drawable.bathglowbutton,bitmapFactoryOptions);
+        bathRoomObjects.add(bathTubeObject = new GameObject(showerObjectRes,
+                370, 242, 400, 199, resolutionControlFactorX, resolutionControlFactorY,4));
 
     }
 
@@ -287,7 +288,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                 if (collision(click, roomScroll.getRoomButtonRectangles()[i])) {
                     if (i == 0) {
 
-                        kitchenRoomStart();
+                         bathRoomStart();
                     }
                     if (i == 1) {
                         playRoomStart();
@@ -296,7 +297,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                         outsideRoomStart();
                     }
                     if (i == 3) {
-                        bathRoomStart();
+                        kitchenRoomStart();
                     }
                 }
             }
@@ -314,7 +315,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
         }}
         if(state == GameState.BATH){
-       if (collision(click, showerGameObject.getRectangle())) {
+       if (collision(click, bathTubeObject.getRectangle())) {
 
             showerGameStarted();
 
@@ -419,6 +420,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                     object.hide();
                 }
                 for(GameObject object : kitchenObjects){
+                    object.update();
                     object.show();
                 }
                 for(GameObject object : bathRoomObjects){
@@ -433,6 +435,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                 break;
             case PLAYROOM:
                 for(GameObject object : playRoomObjects){
+                    object.update();
                     object.show();
                 }
                 for(GameObject object : kitchenObjects){
@@ -463,7 +466,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                 }
 
                 showerGame = null;
-                currentRoom = R.drawable.stonepaperroom;
+                currentRoom = R.drawable.sspbackground;
                 break;
 
 
@@ -491,6 +494,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                     object.hide();
                 }
                 for(GameObject object : bathRoomObjects){
+                    object.update();
                     object.show();
                 }
                 for(GameObject object : outsideObjects){
@@ -511,6 +515,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                     object.hide();
                 }
                 for(GameObject object : outsideObjects){
+                    object.update();
                     object.show();
 
                 }
