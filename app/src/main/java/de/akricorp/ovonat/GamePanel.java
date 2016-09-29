@@ -29,12 +29,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
     private StoneScissorPaperGame stoneScissorPaperGame;
     private BitmapFactory.Options bitmapFactoryOptions = new BitmapFactory.Options();
-    private static GameSettings gameSettings = new GameSettings();
+    private static GameSettings gameSettings;
     private MainThread thread;
-    public int height = gameSettings.GAME_HEIGHT;
-    public int width = gameSettings.GAME_WIDTH;
     private int currentRoom;
-    int screenHeight;
     private Room room;
     private RoomScroll roomScroll;
     private GameObject player;
@@ -60,6 +57,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     private TimeStatusChanger timeStatusChanger;
     int barChangerTimer = 0;
 
+
     String firstStartTime;
     String lastCloseTime;
     int miniCount;
@@ -74,6 +72,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     public GamePanel(Context context) {
         super(context);
         this.context = context;
+        gameSettings = new GameSettings(context);
         // add callback to surfaceholder to intercept events
         getHolder().addCallback(this);
         timeStatusChanger = new TimeStatusChanger();
@@ -153,32 +152,29 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
+        timeStatusChanger.getDataFromRepository(firstStartTime, lastCloseTime);
+        hygiene         -= timeStatusChanger.getChangeValue();
+        foodSaturation  -= timeStatusChanger.getChangeValue();
+        fun             -= timeStatusChanger.getChangeValue();
+
 
         DisplayMetrics dm = new DisplayMetrics();
         ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(dm);
         int screenWidth = dm.widthPixels;
         int screenHeight = dm.heightPixels;
-        int dens = dm.densityDpi;
-        double wi = (double) width / (double) dens;
-        double hi = (double) height / (double) dens;
-        double x = Math.pow(wi, 2);
-        double y = Math.pow(hi, 2);
-        double screenInches = Math.sqrt(x + y);
         bitmapFactoryOptions.inScaled = false;
 
 
        Log.d("resolution", "x: "+screenWidth+"  y: "+screenHeight);
-        timeStatusChanger.getDataFromRepository(firstStartTime, lastCloseTime);
+
         resolutionControlFactorX = screenWidth / (float) gameSettings.GAME_WIDTH;
         resolutionControlFactorY = screenHeight/ (float) gameSettings.GAME_HEIGHT;
         createStatusBars();
         initActionObjects();
-        Bitmap[] playerRes = new Bitmap[2];
-        playerRes[0]= BitmapFactory.decodeResource(getResources(), R.drawable.ovo3,bitmapFactoryOptions);
-        playerRes[1] = BitmapFactory.decodeResource(getResources(), R.drawable.eyes3,bitmapFactoryOptions);
+
 
         room = new Room(BitmapFactory.decodeResource(getResources(), currentRoom,bitmapFactoryOptions), resolutionControlFactorX,resolutionControlFactorY);
-        player =new GameObject( playerRes, 300, 150,  100, 100, resolutionControlFactorX, resolutionControlFactorY,3);
+        player =new GameObject( gameSettings.getPlayer(currentBody), 300, 150,  100, 100, resolutionControlFactorX, resolutionControlFactorY,3);
 
 
         roomScroll = new RoomScroll(screenWidth, screenHeight, resolutionControlFactorX,resolutionControlFactorY, BitmapFactory.decodeResource(getResources(), R.drawable.kitchenbutton,bitmapFactoryOptions), BitmapFactory.decodeResource(getResources(), R.drawable.playroombutton), BitmapFactory.decodeResource(getResources(), R.drawable.outsidebutton), BitmapFactory.decodeResource(getResources(), R.drawable.bathbutton));
@@ -529,6 +525,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
+
+        timeStatusChanger.getChangeValue();
 
 
         setCurrentBackground();

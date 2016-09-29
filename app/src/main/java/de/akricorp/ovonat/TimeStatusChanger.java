@@ -2,6 +2,7 @@ package de.akricorp.ovonat;
 
 import android.util.Log;
 
+import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -30,13 +31,7 @@ public class TimeStatusChanger {
 
     }
 
-    public void logcheck(){
-        this.calendar = Calendar.getInstance();
-        this.date = dateFormat.format(calendar.getTime());
-        Log.d("dateTime","Date from repository: "+firstStartTime);
-        Log.d("dateTime","realDate: "+date);
 
-    }
 
     public void getDataFromRepository(String firstStartTime, String lastCloseTime){
         this.firstStartTime = firstStartTime;
@@ -45,5 +40,23 @@ public class TimeStatusChanger {
 
     public String getCurrentDate(){
         return  this.date = dateFormat.format(calendar.getTime());
+    }
+
+    public int getChangeValue() {
+
+        int changeValue;
+        calendar = Calendar.getInstance();
+        if (lastCloseTime.compareTo("0") != 0) {   //wenn lastCloseTime = 0, wird die app das erste mal geöffnet
+            long timeChange = calendar.getTime().getTime() - dateFormat.parse(lastCloseTime, new ParsePosition(0)).getTime();
+
+            long hourChange = timeChange / (60 * 60 * 1000) % 60;
+            changeValue = (int) (hourChange / 3);
+        }
+         else{changeValue = 0;}
+
+
+
+
+        return changeValue;
     }
 }

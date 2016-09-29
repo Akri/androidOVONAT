@@ -17,7 +17,7 @@ import de.akricorp.ovonat.R;
 public class ScoreBoard {
     private BitmapFactory.Options bitmapFactoryOptions = new BitmapFactory.Options();
 
-    GameSettings gameSettings = new GameSettings();
+    GameSettings gameSettings;
     Bitmap backGround;
     int width;
     int height;
@@ -34,6 +34,7 @@ public class ScoreBoard {
 
 
     public ScoreBoard(Context context, int w, int h, float resolutionControlFactorX, float resolutionControlFactorY){
+        gameSettings = new GameSettings(context);
         bitmapFactoryOptions.inScaled = false;
         this.width = (int)(w*resolutionControlFactorX);
         this.height = (int)(h*resolutionControlFactorY);

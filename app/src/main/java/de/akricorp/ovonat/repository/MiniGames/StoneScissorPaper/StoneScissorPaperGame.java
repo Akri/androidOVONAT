@@ -32,7 +32,7 @@ public class StoneScissorPaperGame extends Object {
     Bitmap ovoScissor;
     Bitmap ovoStone;
     Bitmap ovoPaper;
-    GameSettings gameSettings = new GameSettings();
+    GameSettings gameSettings ;
     public enum OvosChoice {OVOSTONE, OVOPAPER, OVOSCISSOR, OVONOTHING}
     float resolutionControlFactorX;
     float resolutionControlFactorY;
@@ -52,6 +52,7 @@ public class StoneScissorPaperGame extends Object {
     public StoneScissorPaperGame(Context context, float resolutionControlFactorX, float resolutionControlFactorY){
         this.resolutionControlFactorX = resolutionControlFactorX;
         this.resolutionControlFactorY= resolutionControlFactorY;
+        gameSettings = new GameSettings(context);
 
         bitmapFactoryOptions.inScaled = false;
         winScreen =  BitmapFactory.decodeResource(context.getResources(), R.drawable.winnerscreen,bitmapFactoryOptions);

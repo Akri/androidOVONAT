@@ -277,14 +277,14 @@ public class DataRepository {
         if(!cursor.moveToFirst()) {
             ContentValues firstOvoValues = new ContentValues();
             firstOvoValues.put(KEY_FIRST_START_TIME, currentDate );
-            firstOvoValues.put(KEY_LAST_CLOSE_TIME, "2");
+            firstOvoValues.put(KEY_LAST_CLOSE_TIME, "0");
             firstOvoValues.put(KEY_MINI_COUNT, "3");
             firstOvoValues.put(KEY_CURRENT_BOOTS, "4");
             firstOvoValues.put(KEY_CURRENT_HAIR, "5");
-            firstOvoValues.put(KEY_CURRENT_BODY, "6");
-            firstOvoValues.put(KEY_FOOD_SATURATION, "1");
-            firstOvoValues.put(KEY_HYGIENE, "8");
-            firstOvoValues.put(KEY_FUN, "9");
+            firstOvoValues.put(KEY_CURRENT_BODY, "2");
+            firstOvoValues.put(KEY_FOOD_SATURATION, "3");
+            firstOvoValues.put(KEY_HYGIENE, "3");
+            firstOvoValues.put(KEY_FUN, "3");
             db.insert(DATABASE_TABLE, null, firstOvoValues);
         }
 
