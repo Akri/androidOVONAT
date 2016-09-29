@@ -87,6 +87,6 @@ public class StatusBar {
         canvas.drawRect(bar, barPaint);
         canvas.drawRect(barBorder, barBorderPaint);
         canvas.drawBitmap(icon,xPosition-(int)(5*resolutionControlFactorX),yPosition-height,null);
-        Log.d("bars",""+currentValue);
+
     }
 }

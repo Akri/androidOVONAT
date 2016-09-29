@@ -1,4 +1,4 @@
-package de.akricorp.ovonat.repository.MiniGames.StoneScissorPaper;
+package de.akricorp.ovonat.repository.Games.StonePaperScissor;
 
 import android.content.Context;
 import android.graphics.Bitmap;

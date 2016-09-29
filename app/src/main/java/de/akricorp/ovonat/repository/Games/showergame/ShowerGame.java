@@ -1,6 +1,5 @@
-package de.akricorp.ovonat.repository.MiniGames.StoneScissorPaper;
+package de.akricorp.ovonat.repository.Games.showergame;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,16 +11,12 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
 import android.util.Log;
-import android.view.WindowManager;
 
 import java.util.ArrayList;
 import java.util.Random;
 
 import de.akricorp.ovonat.GameObject;
-import de.akricorp.ovonat.Player;
 import de.akricorp.ovonat.R;
-
-import static android.content.Context.SENSOR_SERVICE;
 
 /**
  * Created by Hännes on 27.09.2016.
@@ -43,7 +38,7 @@ public class ShowerGame  {
     private float[] mValuesOrientation = new float[3];
     private Sensor mAccelerometer;
     float ovoMoveFactor;
-    private Player playerWet;
+    private GameObject playerWet;
     private Bitmap[] playerWetRes = new Bitmap[3];
 
 
@@ -73,7 +68,7 @@ public class ShowerGame  {
         playerWetRes[2] = BitmapFactory.decodeResource(context.getResources(), R.drawable.eyes3,bitmapFactoryOptions);
         playerWetRes[1] = BitmapFactory.decodeResource(context.getResources(), R.drawable.ovo3wetlayer,bitmapFactoryOptions);
 
-        playerWet = new Player( playerWetRes, (100), (100), 3, 50, 350, resolutionControlFactorX, resolutionControlFactorY);
+        playerWet = new GameObject( playerWetRes, 50, 350, 100, 100, resolutionControlFactorX, resolutionControlFactorY,3);
 
         mSensorManager.registerListener(mEventListener,mAccelerometer ,mSensorManager.SENSOR_DELAY_NORMAL);
         fillDropList(dropList1);

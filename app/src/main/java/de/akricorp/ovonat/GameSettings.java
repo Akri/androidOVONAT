@@ -11,6 +11,7 @@ public class GameSettings {
 
     public int GAME_WIDTH = 856;
     public int GAME_HEIGHT = 480;
+    public int bodyStyleCount = 3;
 
 
     Context context;
@@ -25,25 +26,25 @@ public class GameSettings {
     //body
     public Bitmap[] getPlayer(int bodyType) {
         if (bodyType == 1) {
-            Bitmap[] playerRes = new Bitmap[2];
-            playerRes[0] = BitmapFactory.decodeResource(context.getResources(), R.drawable.ovo3, bitmapFactoryOptions);
-            playerRes[1] = BitmapFactory.decodeResource(context.getResources(), R.drawable.eyes3, bitmapFactoryOptions);
-            return playerRes;
+            Bitmap[] body1Res = new Bitmap[2];
+            body1Res[0] = BitmapFactory.decodeResource(context.getResources(), R.drawable.ovo3, bitmapFactoryOptions);
+            body1Res[1] = BitmapFactory.decodeResource(context.getResources(), R.drawable.eyes3, bitmapFactoryOptions);
+            return body1Res;
         }
         if (bodyType == 2) {
-            Bitmap[] playerRes = new Bitmap[3];
-            playerRes[0] = BitmapFactory.decodeResource(context.getResources(), R.drawable.ovo3, bitmapFactoryOptions);
-            playerRes[1] = BitmapFactory.decodeResource(context.getResources(), R.drawable.eyes3, bitmapFactoryOptions);
-            playerRes[2] = BitmapFactory.decodeResource(context.getResources(), R.drawable.eyepatch, bitmapFactoryOptions);
-            return playerRes;
+            Bitmap[] body2Res = new Bitmap[3];
+            body2Res[0] = BitmapFactory.decodeResource(context.getResources(), R.drawable.ovo3, bitmapFactoryOptions);
+            body2Res[1] = BitmapFactory.decodeResource(context.getResources(), R.drawable.eyes3, bitmapFactoryOptions);
+            body2Res[2] = BitmapFactory.decodeResource(context.getResources(), R.drawable.eyepatch, bitmapFactoryOptions);
+            return body2Res;
         }
 
         if (bodyType == 3) {
-            Bitmap[] playerRes = new Bitmap[3];
-            playerRes[0] = BitmapFactory.decodeResource(context.getResources(), R.drawable.ovo3, bitmapFactoryOptions);
-            playerRes[1] = BitmapFactory.decodeResource(context.getResources(), R.drawable.eyes3, bitmapFactoryOptions);
-            playerRes[2] = BitmapFactory.decodeResource(context.getResources(), R.drawable.glasses, bitmapFactoryOptions);
-            return playerRes;
+            Bitmap[] body3Res = new Bitmap[3];
+            body3Res[0] = BitmapFactory.decodeResource(context.getResources(), R.drawable.ovo3, bitmapFactoryOptions);
+            body3Res[1] = BitmapFactory.decodeResource(context.getResources(), R.drawable.eyes3, bitmapFactoryOptions);
+            body3Res[2] = BitmapFactory.decodeResource(context.getResources(), R.drawable.glasses, bitmapFactoryOptions);
+            return body3Res;
         }
         else{return null;}
 

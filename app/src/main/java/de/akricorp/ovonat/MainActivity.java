@@ -25,7 +25,7 @@ public class MainActivity extends Activity {
         this.timeStatusChanger = new TimeStatusChanger();
         repository.open();
         repository.setCursor();
-        Log.d("testreposi",repository.repositoryIsEmpty()+"" );
+
         if(repository.repositoryIsEmpty()){
             repository.firstSetup(timeStatusChanger.getCurrentDate());
         }

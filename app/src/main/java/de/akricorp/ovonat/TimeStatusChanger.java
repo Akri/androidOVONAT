@@ -25,7 +25,7 @@ public class TimeStatusChanger {
         this. dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         this.date = dateFormat.format(calendar.getTime());
 
-        Log.d("dateTime","realDate: "+date);
+
 
 
 

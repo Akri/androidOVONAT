@@ -79,9 +79,7 @@ public class RoomScroll   {
         roomButtonArrayList.add(kitchenButton);
         scroll();
 
-        Log.d("roomScroll", "screenWidth: "+ canvasWidth);
-        Log.d("roomScroll", "currentX: "+currentX);
-        Log.d("roomScroll", "downX: "+downX);
+
 
     }
 

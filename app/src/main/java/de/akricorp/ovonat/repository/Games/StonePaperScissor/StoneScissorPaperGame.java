@@ -1,4 +1,4 @@
-package de.akricorp.ovonat.repository.MiniGames.StoneScissorPaper;
+package de.akricorp.ovonat.repository.Games.StonePaperScissor;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -70,14 +70,14 @@ public class StoneScissorPaperGame extends Object {
         ovoPaper =  Bitmap.createScaledBitmap(ovoPaper,(int)(ovoPaper.getWidth()*resolutionControlFactorX*0.6),(int)(ovoPaper.getHeight()*resolutionControlFactorY*0.6),false);
 
         Bitmap[] paperRes = new Bitmap[1];
-        paperRes[0] = BitmapFactory.decodeResource(context.getResources(), R.drawable.paper,bitmapFactoryOptions);
+        paperRes[0] = BitmapFactory.decodeResource(context.getResources(), R.drawable.paperplayer,bitmapFactoryOptions);
         stoneScissorPaperObjects.add(new GameObject(paperRes,   350, 300,80,  80,  resolutionControlFactorX,resolutionControlFactorY,1));
         Bitmap[] stoneRes = new Bitmap[1];
-        stoneRes[0] = BitmapFactory.decodeResource(context.getResources(), R.drawable.stone,bitmapFactoryOptions);
-        stoneScissorPaperObjects.add(new GameObject(stoneRes,  150, 300,100 , 100, resolutionControlFactorX, resolutionControlFactorY,1));
+        stoneRes[0] = BitmapFactory.decodeResource(context.getResources(), R.drawable.rockplayer,bitmapFactoryOptions);
+        stoneScissorPaperObjects.add(new GameObject(stoneRes,  150, 300,80 , 80, resolutionControlFactorX, resolutionControlFactorY,1));
         Bitmap[] scissorRes = new Bitmap[1];
-        scissorRes[0] = BitmapFactory.decodeResource(context.getResources(), R.drawable.scissor,bitmapFactoryOptions);
-        stoneScissorPaperObjects.add(new GameObject(scissorRes,550, 300, 100,  100,  resolutionControlFactorX,resolutionControlFactorY,1));
+        scissorRes[0] = BitmapFactory.decodeResource(context.getResources(), R.drawable.scissorsplayer,bitmapFactoryOptions);
+        stoneScissorPaperObjects.add(new GameObject(scissorRes,550, 300, 80,  80,  resolutionControlFactorX,resolutionControlFactorY,1));
         scoreBoard = new ScoreBoard(context,250,80,resolutionControlFactorX,resolutionControlFactorY);
     }
 

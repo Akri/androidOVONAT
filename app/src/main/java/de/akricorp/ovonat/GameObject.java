@@ -15,6 +15,7 @@ public  class GameObject {
     protected int originalY; //y value for standart screenWHeight
     public int x;
     public int y;
+    public int numFrames;
     protected int originalWidth;
     protected int originalHeight;
     protected int width;
@@ -22,8 +23,7 @@ public  class GameObject {
     private float resolutionControlFactorX;
     private float resolutionControlFactorY;
     private Animation[] animation;
-    private boolean playing = true;
-
+    boolean playing = true;
     Bitmap[] res;
     Bitmap[][] resParts;
 
@@ -31,6 +31,7 @@ public  class GameObject {
     public boolean isShown;
 
     public GameObject(Bitmap[] res,int positionX,int positionY,int w,int h, float resolutionControlFactorX,float resolutionControlFactorY, int numFrames){
+        this.numFrames = numFrames;
         originalHeight =h;
         originalWidth = w;
         this.resolutionControlFactorX = resolutionControlFactorX;
@@ -38,29 +39,35 @@ public  class GameObject {
         height = (int)(h*resolutionControlFactorY);
         width =(int)( w*resolutionControlFactorX);
         this.res = new Bitmap[res.length];
-        animation = new Animation[res.length];
         this.originalX = positionX;
         this.originalY = positionY;
         standartScaling(resolutionControlFactorX, resolutionControlFactorY);
-        resParts = new Bitmap[res.length][numFrames];
         isShown = true;
-
+        setupBitmapAnimation(res);
 
        // i*originalWidth,0, originalWidth,originalHeight
 
-        for(int j =0; j<res.length;j++){
-            this.res[j] = res[j];
-        for(int i = 0; i < numFrames;i++)
-        {
-            resParts[j][i] = Bitmap.createBitmap(res[j],i*originalWidth,0, originalWidth,originalHeight);
-        }
-        for(int y =0 ; y <res.length; y++) {
-            animation[y] = new Animation();
-            animation[y].setFrames(resParts[y]);
-            animation[y].setDelay(150);
-        }
 
-    }}
+
+    }
+
+    public void setupBitmapAnimation(Bitmap[] newRes){
+        this.res = newRes;
+        animation = new Animation[res.length];
+        resParts = new Bitmap[res.length][numFrames];
+
+        for(int j =0; j<res.length;j++) {
+            this.res[j] = res[j];
+            for (int i = 0; i < numFrames; i++) {
+                resParts[j][i] = Bitmap.createBitmap(res[j], i * originalWidth, 0, originalWidth, originalHeight);
+            }
+            for (int y = 0; y < res.length; y++) {
+                animation[y] = new Animation();
+                animation[y].setFrames(resParts[y]);
+                animation[y].setDelay(150);
+            }
+        }
+    }
 
     public void setX(int newX)
     {
@@ -107,7 +114,7 @@ public  class GameObject {
         Log.d("Positions new scale",this.getClass() + ": x: " + x + ", y: " + y);
     }
 
-    public void clickReaction(){}
+
 
     public void hide(){
         isShown = false;
@@ -133,6 +140,7 @@ public  class GameObject {
         }
     }
     }
+
     public boolean getPlaying(){return playing;}
 
 

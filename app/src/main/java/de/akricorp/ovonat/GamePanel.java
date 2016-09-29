@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import de.akricorp.ovonat.actionObjects.RoomScroll;
 
 import de.akricorp.ovonat.repository.DataRepository;
-import de.akricorp.ovonat.repository.MiniGames.StoneScissorPaper.ShowerGame;
-import de.akricorp.ovonat.repository.MiniGames.StoneScissorPaper.StoneScissorPaperGame;
+import de.akricorp.ovonat.repository.Games.showergame.ShowerGame;
+import de.akricorp.ovonat.repository.Games.StonePaperScissor.StoneScissorPaperGame;
 
 /**
  * Created by Hannes on 23.07.2015.
@@ -40,9 +40,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     private ArrayList<GameObject> bathRoomObjects = new ArrayList<>();
     private ArrayList<GameObject> outsideObjects = new ArrayList<>();
     private GameObject stoneScissorPaperObject;
-    private GameObject showerGameObject;
     private GameObject fridgeObject;
     private GameObject bathTubeObject;
+    private GameObject hangerObject;
     private float resolutionControlFactorX;
     private float resolutionControlFactorY;
     StatusBar funBar;
@@ -166,7 +166,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         bitmapFactoryOptions.inScaled = false;
 
 
-       Log.d("resolution", "x: "+screenWidth+"  y: "+screenHeight);
+
 
         resolutionControlFactorX = screenWidth / (float) gameSettings.GAME_WIDTH;
         resolutionControlFactorY = screenHeight/ (float) gameSettings.GAME_HEIGHT;
@@ -235,7 +235,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         Bitmap[] stoneScissorPaperObjectRes = new Bitmap[1];
         stoneScissorPaperObjectRes[0] = BitmapFactory.decodeResource(getResources(), R.drawable.sspglowicon,bitmapFactoryOptions);
         playRoomObjects.add(stoneScissorPaperObject = new GameObject(stoneScissorPaperObjectRes,
-                600, 220, 75, 100, resolutionControlFactorX, resolutionControlFactorY,4));
+                580, 220, 100, 100, resolutionControlFactorX, resolutionControlFactorY,4));
+
+        Bitmap[] hangerObjectRes = new Bitmap[1];
+        hangerObjectRes[0] = BitmapFactory.decodeResource(getResources(), R.drawable.hangerglowicon,bitmapFactoryOptions);
+        playRoomObjects.add(hangerObject = new GameObject(hangerObjectRes,
+                100, 80, 100, 50, resolutionControlFactorX, resolutionControlFactorY,4));
 
         Bitmap[] showerObjectRes = new Bitmap[1];
         showerObjectRes[0] = BitmapFactory.decodeResource(getResources(), R.drawable.bathglowbutton,bitmapFactoryOptions);
@@ -313,7 +318,23 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
             stonePaperStart();
 
-        }}
+        }
+
+          if (collision(click, hangerObject.getRectangle())) {
+              player.hide();
+              if(currentBody < gameSettings.bodyStyleCount){
+              currentBody +=1;}
+              else{currentBody =1;}
+              Log.d("cloth",""+currentBody);
+              player.setupBitmapAnimation(gameSettings.getPlayer(currentBody));
+              player.show();
+
+
+
+
+          }
+
+      }
         if(state == GameState.BATH){
        if (collision(click, bathTubeObject.getRectangle())) {
 
@@ -333,7 +354,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         for(int i = 0; i < stoneScissorPaperGame.stoneScissorPaperObjects.size(); i++){
 
             if (collision(click, stoneScissorPaperGame.stoneScissorPaperObjects.get(i).getRectangle())&& !stoneScissorPaperGame.gameWon && !stoneScissorPaperGame.gameLost) {
-                Log.d("SSPText", i+"");
+
                 switch (i){
                     case 0:
                         stoneScissorPaperGame.paperUsed();break;
@@ -362,7 +383,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
     public void update() throws InterruptedException {
 
-
+        Log.d("cloth",""+currentBody);
         if(barChangerTimer <= 100){
             barChangerTimer++;
         }
@@ -548,7 +569,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
 
             room.draw(canvas);
-            player.draw(canvas);
+
 
 
 
@@ -557,10 +578,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
             switch (state) {
                 case STONEPAPER:
+                    player.draw(canvas);
                     stoneScissorPaperGame.draw(canvas);
                     break;
 
                 case SHOWERGAME:
+
                     showerGame.draw(canvas);
 
                 case KITCHEN:
@@ -572,6 +595,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
 
                 case PLAYROOM:
+                    player.draw(canvas);
                     for (GameObject object : playRoomObjects) {
                         object.draw(canvas);
                     }
@@ -581,7 +605,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
 
                 case BATH:
-
+                    player.draw(canvas);
                     for (GameObject object : bathRoomObjects) {
                         object.draw(canvas);
                     }
@@ -589,7 +613,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
 
                 case OUTSIDE:
-
+                    player.draw(canvas);
                     for (GameObject object : outsideObjects) {
                         object.draw(canvas);
 
