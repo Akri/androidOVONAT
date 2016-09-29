@@ -78,6 +78,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         getHolder().addCallback(this);
         timeStatusChanger = new TimeStatusChanger();
         initDb(context);
+        Log.d("funfail", "startdb: "+Integer.parseInt(repository.getData("fun")));
 
         thread = new MainThread(getHolder(), this);
 
@@ -120,6 +121,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         while (retry && counter < 1000) {
             try {
                 counter++;
+                Log.d("funfail", "fun: "+fun);
                 thread.setRunning(false);
                 thread.join();
                 retry = false;
@@ -392,7 +394,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
             for(int i =0; i < statusBarArrayList.size();i++){
             statusBarArrayList.get(i).addValue(-1);
             if(i == 0){hygiene = statusBarArrayList.get(0).getValue();}
-                if(i == 1){hygiene = statusBarArrayList.get(1).getValue();}
+                if(i == 1){fun = statusBarArrayList.get(1).getValue();}
                 if(i == 2){foodSaturation = statusBarArrayList.get(2).getValue();}
 
         }}
@@ -407,7 +409,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
             if((stoneScissorPaperGame.gameWon || stoneScissorPaperGame.gameLost)&& !currentWaitingProcess){
 
 
-                statusBarArrayList.get(1).addValue(5);
+                statusBarArrayList.get(1).addValue(2);
                 fun = statusBarArrayList.get(1).getValue();
                 currentWaitingProcess = true;
                 thread.sleep(5000);
