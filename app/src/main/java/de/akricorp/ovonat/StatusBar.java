@@ -5,11 +5,9 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.util.Log;
 
-/**
- * Created by Hannes on 01.09.2015.
- */
+
+
 public class StatusBar {
     private int currentValue;
     private int maxValue = 10;

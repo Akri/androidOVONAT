@@ -3,28 +3,19 @@ package de.akricorp.ovonat.repository;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.ContextWrapper;
-import android.content.Intent;
+
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.net.Uri;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.GridView;
+
+
+
 
 import java.io.File;
-import java.util.ArrayList;
 
-import de.akricorp.ovonat.R;
 
-/**
- * Created by Hannes on 04.08.2015.
- */
+
 public class DataRepository {
 
 
@@ -94,51 +85,9 @@ public class DataRepository {
     }
 
 
-    /*
-    public long addFoodieItem(FoodieItem item) {
-        ContentValues newFoodieValues = new ContentValues();
-        newFoodieValues.put(KEY_IMAGE_PATH, item.getImagePath());
-        newFoodieValues.put(KEY_RATING, item.getRating());
-        newFoodieValues.put(KEY_TITLE, item.getTitle());
-        return db.insert(DATABASE_TABLE, null, newFoodieValues);
-    }
-    */
 
 
-    /*
-    public void deleteFoodieItem(String foodieItemID) {             // alte datenbank ueberschreibt nur
-        db.delete(DATABASE_TABLE, KEY_ID + "=" + foodieItemID + "+ 1", null);
-    }
-    */
 
-    /*
-    public ArrayList<FoodieItem> getAllFoodieItems() {                 //daten aus datenbank holen
-        ArrayList<FoodieItem> items = new ArrayList<FoodieItem>();
-        items.clear();
-        Cursor cursor = db.query(DATABASE_TABLE, new String[]{KEY_ID,
-                KEY_IMAGE_PATH, KEY_RATING, KEY_TITLE}, null, null, null, null, null, null);
-        if (cursor.moveToFirst()) {
-            do {
-                String title = cursor.getString(COLUMN_TITLE_INDEX);
-                String imagePath = cursor.getString(COLUMN_IMAGE_PATH_INDEX);
-                float rating = cursor.getFloat(COLUMN_RATING_INDEX);
-                items.add(new FoodieItem(imagePath, rating, title));
-            } while (cursor.moveToNext());
-        }
-        return items;
-    }
-    */
-
-    /*
-    public FoodieItem getFoodieItem(String foodieItemID) {                  // wichtig, holt einzelne daten
-        Cursor cursor = db.query(DATABASE_TABLE, new String[]{KEY_ID, KEY_IMAGE_PATH, KEY_RATING, KEY_TITLE}, null, null, null, null, null);
-        cursor.moveToPosition(Integer.parseInt(foodieItemID));
-        String title = cursor.getString(COLUMN_TITLE_INDEX);
-        String imagePath = cursor.getString(COLUMN_IMAGE_PATH_INDEX);
-        float rating = cursor.getFloat(COLUMN_RATING_INDEX);
-        return new FoodieItem(imagePath, rating, title);
-    }
-    */
 
     public String getData(String requestedData){
 
@@ -185,12 +134,11 @@ public class DataRepository {
 
     public int putIntoDb(String changedData, String newValue){
         ContentValues cv = new ContentValues();
-        Log.d("putintodb","done");
-        switch(changedData){                                    // KOENNTE FEHLER HABEN
+
+        switch(changedData){
 
             case "firstStartTime":
-                 /*  db.execSQL("UPDATE " + DATABASE_TABLE + " SET " + KEY_FIRST_START_TIME + " = " + newValue + " WHERE _id = 1;");    Zweitlösung
-                break;*/
+
                 cv.put(KEY_FIRST_START_TIME, newValue);
                 return db.update(DATABASE_TABLE, cv, null, null);
 
@@ -227,14 +175,7 @@ public class DataRepository {
     }
 
 
-    /*
-    public long updateRating(String foodieItemID, float rating) {                   //ueberschreibt alte daten
-        ContentValues cv = new ContentValues();
-        cv.put(KEY_RATING, rating);
-        db.update(DATABASE_TABLE, cv, KEY_ID + " = " + foodieItemID + " + 1", null);
-        return 1;
-    }
-    */
+
 
     private class DataDBOpenHelper extends SQLiteOpenHelper {
 
@@ -256,7 +197,7 @@ public class DataRepository {
         @Override
         public void onCreate(SQLiteDatabase db) {
             db.execSQL(DATABASE_CREATE);
-            Log.d("db created ", "success");
+
 
 
 
@@ -268,10 +209,7 @@ public class DataRepository {
         }
     }
 
-    private static boolean doesDatabaseExist(ContextWrapper context, String dbName) {
-        File dbFile = context.getDatabasePath(dbName);
-        return dbFile.exists();
-    }
+
     public void firstSetup(String currentDate){
 
          cursor = db.query(DATABASE_TABLE, new String[]{KEY_FIRST_START_TIME,
@@ -289,8 +227,8 @@ public class DataRepository {
             firstOvoValues.put(KEY_CURRENT_HAIR, "5");
             firstOvoValues.put(KEY_CURRENT_BODY, "2");
             firstOvoValues.put(KEY_FOOD_SATURATION, "3");
-            firstOvoValues.put(KEY_HYGIENE, "3");
-            firstOvoValues.put(KEY_FUN, "3");
+            firstOvoValues.put(KEY_HYGIENE, "4");
+            firstOvoValues.put(KEY_FUN, "5");
             firstOvoValues.put(KEY_LIFE_TIME_RECORD,"0:0:0:0");
             db.insert(DATABASE_TABLE, null, firstOvoValues);
         }
@@ -304,7 +242,7 @@ public class DataRepository {
 
         } else
         {
-            // I AM EMPTY
+
             return true;
         }
     }

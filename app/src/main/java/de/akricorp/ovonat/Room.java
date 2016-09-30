@@ -2,11 +2,9 @@ package de.akricorp.ovonat;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.util.Log;
 
-/**
- * Created by Hannes on 28.07.2015.
- */
+
+
 public class Room {
 
     private Bitmap image;

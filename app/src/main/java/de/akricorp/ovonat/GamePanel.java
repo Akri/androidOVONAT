@@ -5,9 +5,9 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
-import android.icu.text.IDNA;
+
 import android.util.DisplayMetrics;
-import android.util.Log;
+
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.graphics.Canvas;
@@ -16,70 +16,79 @@ import android.view.SurfaceView;
 import java.util.ArrayList;
 
 
-//import de.akricorp.ovonat.actionObjects.RoomScroll;
+
 import de.akricorp.ovonat.actionObjects.RoomScroll;
 
 import de.akricorp.ovonat.repository.DataRepository;
 import de.akricorp.ovonat.repository.Games.showergame.ShowerGame;
 import de.akricorp.ovonat.repository.Games.StonePaperScissor.StoneScissorPaperGame;
 
-/**
- * Created by Hannes on 23.07.2015.
- */
+
 public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
-    private StoneScissorPaperGame stoneScissorPaperGame;
+
     private BitmapFactory.Options bitmapFactoryOptions = new BitmapFactory.Options();
     private static GameSettings gameSettings;
     private MainThread thread;
-    private int currentRoom;
+    private float resolutionControlFactorX;
+    private float resolutionControlFactorY;
+    private int screenWidth;
+    private int screenHeight;
+    private DataRepository repository;
+    private Context context;
+    private TimeStatusChanger timeStatusChanger;
+    private enum GameState {OUTSIDE, KITCHEN, PLAYROOM, BATH, STONEPAPER, SHOWERGAME}
+    private GameState state = GameState.PLAYROOM;
+
+    private GameObject player;
     private Room room;
     private RoomScroll roomScroll;
-    private GameObject player;
+    private InfoBox infobox;
+    private Bitmap deadOvo;
+
     private ArrayList<GameObject> playRoomObjects = new ArrayList<>();
     private ArrayList<GameObject> kitchenObjects = new ArrayList<>();
     private ArrayList<GameObject> bathRoomObjects = new ArrayList<>();
     private ArrayList<GameObject> outsideObjects = new ArrayList<>();
     private GameObject stoneScissorPaperObject;
+
     private GameObject fridgeObject;
     private GameObject bathTubeObject;
     private GameObject hangerObject;
-    private float resolutionControlFactorX;
-    private float resolutionControlFactorY;
-    private int screenWidth;
-    private int screenHeight;
-    StatusBar funBar;
-    StatusBar hygeneBar;
-    StatusBar saturationBar;
-    DataRepository repository;
-    Context context;
-    ArrayList<StatusBar> statusBarArrayList = new ArrayList<>();
-    boolean currentWaitingProcess = false;
-    public enum GameState {OUTSIDE, KITCHEN, PLAYROOM, BATH, STONEPAPER, SHOWERGAME}
-    ShowerGame showerGame;
-    GameState state = GameState.PLAYROOM;
-    private TimeStatusChanger timeStatusChanger;
-    int barChangerTimer = 0;
-    private InfoBox infobox;
-    private boolean isDead = false;
+
     private long deadCounter = 0;
     private int frapsPerStatusLose = 2000;
+    private int currentRoom;
+    private int barChangerTimer = 0;
 
-    Bitmap deadOvo;
-    Canvas canvas;
+
+    private ArrayList<StatusBar> statusBarArrayList = new ArrayList<>();
+    private StatusBar funBar;
+    private StatusBar hygeneBar;
+    private StatusBar saturationBar;
 
 
-    String firstStartTime;
-    String lastCloseTime;
-    int miniCount;
-    int currentBoots;
-    int currentHair;
-    int currentBody;
-    int foodSaturation;
-    int hygiene;
-    int fun;
-    String lifeTimeRecord;
-    String currentLifeTime;
+    private boolean currentWaitingProcess = false;
+    private boolean isDead = false;
+
+
+    private ShowerGame showerGame;
+    private StoneScissorPaperGame stoneScissorPaperGame;
+
+
+    private String firstStartTime;
+    private String lastCloseTime;
+    private int miniCount;
+    private int currentBoots;
+    private int currentHair;
+    private int currentBody;
+    private int foodSaturation;
+    private int hygiene;
+    private int fun;
+    private String lifeTimeRecord;
+    private String currentLifeTime;
+
+
 
 
     public GamePanel(Context context) {
@@ -101,26 +110,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
     }
 
-    private void initDb(Context context) {
 
-        repository = new DataRepository(context);
-        repository.open();
-        repository.setCursor();
-        Log.d("lifeTimeR", "local"+lifeTimeRecord);
-        this.firstStartTime = repository.getData("firstStartTime");
-        this.lastCloseTime = repository.getData("lastCloseTime");
-        this.miniCount = Integer.parseInt(repository.getData("miniCount"));
-        this.currentBoots =Integer.parseInt(repository.getData("boots"));
-        this.currentHair =Integer.parseInt(repository.getData("hair"));
-        this.currentBody= Integer.parseInt(repository.getData("body"));
-        this.foodSaturation=Integer.parseInt(repository.getData("foodSaturation"));
-        this.hygiene=Integer.parseInt(repository.getData("hygiene"));
-        this.fun=Integer.parseInt(repository.getData("fun"));
-        this.lifeTimeRecord= repository.getData("timeRecord");
-
-
-
-    }
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
@@ -135,7 +125,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         while (retry && counter < 1000) {
             try {
                 counter++;
-                Log.d("funfail", "fun: "+fun);
+
                 thread.setRunning(false);
                 thread.join();
                 retry = false;
@@ -153,19 +143,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
     }
 
-    private void saveDataToRepository(){
-        repository.putIntoDb("lastCloseTime", timeStatusChanger.getCurrentDate());
-        repository.putIntoDb("miniCount",""+miniCount);
-        repository.putIntoDb("boots",""+currentBoots );
-        repository.putIntoDb("hair",""+currentHair);
-        repository.putIntoDb("body",""+currentBody);
-        repository.putIntoDb("foodSaturation",""+foodSaturation);
-        repository.putIntoDb("hygiene",""+hygiene);
-        repository.putIntoDb("fun",""+fun);
-        repository.putIntoDb("timeRecord",lifeTimeRecord);
-        repository.putIntoDb("firstStartTime",firstStartTime);
 
-    }
+
 
 
 
@@ -202,13 +181,46 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         showerGameStarted();
         playRoomStart();
 
-        //start gameloop
+
 
 
 
 
         thread.setRunning(true);
         thread.start();
+
+    }
+
+
+    private void initDb(Context context) {
+
+        repository = new DataRepository(context);
+        repository.open();
+        repository.setCursor();
+        this.firstStartTime = repository.getData("firstStartTime");
+        this.lastCloseTime = repository.getData("lastCloseTime");
+        this.miniCount = Integer.parseInt(repository.getData("miniCount"));
+        this.currentBoots =Integer.parseInt(repository.getData("boots"));
+        this.currentHair =Integer.parseInt(repository.getData("hair"));
+        this.currentBody= Integer.parseInt(repository.getData("body"));
+        this.foodSaturation=Integer.parseInt(repository.getData("foodSaturation"));
+        this.hygiene=Integer.parseInt(repository.getData("hygiene"));
+        this.fun=Integer.parseInt(repository.getData("fun"));
+        this.lifeTimeRecord= repository.getData("timeRecord");
+
+    }
+
+    private void saveDataToRepository(){
+        repository.putIntoDb("lastCloseTime", timeStatusChanger.getCurrentDate());
+        repository.putIntoDb("miniCount",""+miniCount);
+        repository.putIntoDb("boots",""+currentBoots );
+        repository.putIntoDb("hair",""+currentHair);
+        repository.putIntoDb("body",""+currentBody);
+        repository.putIntoDb("foodSaturation",""+foodSaturation);
+        repository.putIntoDb("hygiene",""+hygiene);
+        repository.putIntoDb("fun",""+fun);
+        repository.putIntoDb("timeRecord",lifeTimeRecord);
+        repository.putIntoDb("firstStartTime",firstStartTime);
 
     }
 
@@ -244,6 +256,19 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         player.show();
     }
 
+    private void showerGameStarted() {
+        state = GameState.SHOWERGAME;
+        showerGame = new ShowerGame(context, resolutionControlFactorX, resolutionControlFactorY, hygiene);
+        player.hide();
+    }
+
+    private void stonePaperStart() {
+        state = GameState.STONEPAPER;
+        stoneScissorPaperGame = new StoneScissorPaperGame(context, resolutionControlFactorX,resolutionControlFactorY);
+        player.setX(400); player.setY(150);}
+
+
+
 
     public void initActionObjects(){
         Bitmap[] fridgeObjectRes = new Bitmap[1];
@@ -270,24 +295,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
 
 
-
-
-    private void stonePaperStart() {
-        state = GameState.STONEPAPER;
-        stoneScissorPaperGame = new StoneScissorPaperGame(context, resolutionControlFactorX,resolutionControlFactorY);
-        player.setX(400); player.setY(150);
-
-
-
-
-
-    }
-
-    private void showerGameStarted() {
-        state = GameState.SHOWERGAME;
-        showerGame = new ShowerGame(context, resolutionControlFactorX, resolutionControlFactorY, hygiene);
-        player.hide();
-    }
 
     private void createStatusBars() {
         hygeneBar = new StatusBar(resolutionControlFactorX,resolutionControlFactorY, hygiene, 1,50,50,(BitmapFactory.decodeResource(getResources(), R.drawable.hygienesymbol ,bitmapFactoryOptions)));
@@ -336,7 +343,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         if(infobox.boxShowed){
 
             if (collision(click, infobox.getRectangle())) {
-                 died();
+
                 if(!infobox.screenShowed){
                      infobox.showScreen();
                     roomScroll.hide();
@@ -363,7 +370,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
               if(currentBody < gameSettings.bodyStyleCount){
               currentBody +=1;}
               else{currentBody =1;}
-              Log.d("cloth",""+currentBody);
+
               player.setupBitmapAnimation(gameSettings.getPlayer(currentBody));
               player.show();
 
@@ -422,88 +429,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     }
 
 
-    public void update(Canvas canvas) throws InterruptedException {
-        this.canvas = canvas;
-
-        Log.d("timer",""+barChangerTimer);
-        if(barChangerTimer <= frapsPerStatusLose){
-            barChangerTimer++;
-        }
-
-        else{barChangerTimer =0;}
-        if(barChangerTimer == frapsPerStatusLose && state != GameState.SHOWERGAME&& state != GameState.STONEPAPER){
-            for(int i =0; i < statusBarArrayList.size();i++){
-            statusBarArrayList.get(i).addValue(-1);
-            if(i == 0){hygiene = statusBarArrayList.get(0).getValue();}
-                if(i == 1){fun = statusBarArrayList.get(1).getValue();}
-                if(i == 2){foodSaturation = statusBarArrayList.get(2).getValue();}
-
-        }}
-
-        int[]currentLifeTimeArray = timeStatusChanger.getChangeTime(firstStartTime);
-        currentLifeTime = currentLifeTimeArray[0]+":"+currentLifeTimeArray[1]+":"+currentLifeTimeArray[2]+":"+currentLifeTimeArray[3];
 
 
 
-        String[] currentLifeTimeSplit = currentLifeTime.split(":");
-        String[] currentRecordSplit = lifeTimeRecord.split(":");
-        Log.d("textbug", "test:"+currentRecordSplit[1]);
-        for(int i = 0; i < currentLifeTimeArray.length;i++){
-            if(Integer.parseInt(currentLifeTimeSplit[i])>Integer.parseInt(currentRecordSplit[i])){
-                lifeTimeRecord = currentLifeTime;
-                infobox.setLifeTimeRecord(lifeTimeRecord);
-                Log.d("textbug", "record neu gesetzt");
-
-            }else{if(Integer.parseInt(currentLifeTimeSplit[i])<Integer.parseInt(currentRecordSplit[i])){
-                break;
-            }
-        }}
-        infobox.setCurrentLifeTime(currentLifeTime);
-
-        if((statusBarArrayList.get(0).getValue() == 0 && (statusBarArrayList.get(1).getValue() == 0 || statusBarArrayList.get(2).getValue() == 0)) || (statusBarArrayList.get(1).getValue() == 0 && statusBarArrayList.get(2).getValue() == 0)){
-
-
-                 died();
-        }
-
-
-
-        if (player.getPlaying()) {
-            room.update(BitmapFactory.decodeResource(getResources(), currentRoom,bitmapFactoryOptions));
-            player.update();
-        }
-
-
-
-        if(state == GameState.STONEPAPER && stoneScissorPaperGame!= null){
-
-            if((stoneScissorPaperGame.gameWon || stoneScissorPaperGame.gameLost)&& !currentWaitingProcess){
-
-
-                statusBarArrayList.get(1).addValue(2);
-                fun = statusBarArrayList.get(1).getValue();
-                currentWaitingProcess = true;
-                thread.sleep(5000);
-                currentWaitingProcess = false;
-                playRoomStart();
-                stoneScissorPaperGame = null;
-
-
-            }
-
-        }
-        if(state == GameState.SHOWERGAME && showerGame!= null) {
-
-            statusBarArrayList.get(0).setValue(hygiene);
-            statusBarArrayList.get(0).update();
-            hygiene = showerGame.update();
-
-
-
-
-
-        }
-    }
 
     private void setCurrentBackground() {
         switch (state) {
@@ -627,6 +555,117 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         }
     }
 
+
+    private void died()  {
+        if(!isDead){deadCounter = System.currentTimeMillis();}
+
+        isDead = true;
+        if( (System.currentTimeMillis() - deadCounter)/1000 > 5){
+
+            currentLifeTime = "0:0:0:0";
+            firstStartTime = timeStatusChanger.getCurrentDate();
+            statusBarArrayList.get(1).setValue(5);
+            fun = statusBarArrayList.get(1).getValue();
+            statusBarArrayList.get(1).update();
+            statusBarArrayList.get(0).setValue(4);
+            hygiene = statusBarArrayList.get(0).getValue();
+            statusBarArrayList.get(0).update();
+            statusBarArrayList.get(2).setValue(3);
+            foodSaturation = statusBarArrayList.get(2).getValue();
+            statusBarArrayList.get(2).update();
+            playRoomStart();
+            isDead = false;
+
+        }
+
+
+    }
+
+
+
+    public void update() throws InterruptedException {
+
+
+
+        if(barChangerTimer <= frapsPerStatusLose){
+            barChangerTimer++;
+        }
+
+        else{barChangerTimer =0;}
+        if(barChangerTimer == frapsPerStatusLose && state != GameState.SHOWERGAME&& state != GameState.STONEPAPER){
+            for(int i =0; i < statusBarArrayList.size();i++){
+                statusBarArrayList.get(i).addValue(-1);
+                if(i == 0){hygiene = statusBarArrayList.get(0).getValue();}
+                if(i == 1){fun = statusBarArrayList.get(1).getValue();}
+                if(i == 2){foodSaturation = statusBarArrayList.get(2).getValue();}
+
+            }}
+
+        int[]currentLifeTimeArray = timeStatusChanger.getChangeTime(firstStartTime);
+        currentLifeTime = currentLifeTimeArray[0]+":"+currentLifeTimeArray[1]+":"+currentLifeTimeArray[2]+":"+currentLifeTimeArray[3];
+
+
+
+        String[] currentLifeTimeSplit = currentLifeTime.split(":");
+        String[] currentRecordSplit = lifeTimeRecord.split(":");
+
+        for(int i = 0; i < currentLifeTimeArray.length;i++){
+            if(Integer.parseInt(currentLifeTimeSplit[i])>Integer.parseInt(currentRecordSplit[i])){
+                lifeTimeRecord = currentLifeTime;
+                infobox.setLifeTimeRecord(lifeTimeRecord);
+
+
+            }else{if(Integer.parseInt(currentLifeTimeSplit[i])<Integer.parseInt(currentRecordSplit[i])){
+                break;
+            }
+            }}
+        infobox.setCurrentLifeTime(currentLifeTime);
+
+        if((statusBarArrayList.get(0).getValue() == 0 && (statusBarArrayList.get(1).getValue() == 0 || statusBarArrayList.get(2).getValue() == 0)) || (statusBarArrayList.get(1).getValue() == 0 && statusBarArrayList.get(2).getValue() == 0)){
+
+
+            died();
+        }
+
+
+
+        if (player.getPlaying()) {
+            room.update(BitmapFactory.decodeResource(getResources(), currentRoom,bitmapFactoryOptions));
+            player.update();
+        }
+
+
+
+        if(state == GameState.STONEPAPER && stoneScissorPaperGame!= null){
+
+            if((stoneScissorPaperGame.gameWon || stoneScissorPaperGame.gameLost)&& !currentWaitingProcess){
+
+
+                statusBarArrayList.get(1).addValue(2);
+                fun = statusBarArrayList.get(1).getValue();
+                currentWaitingProcess = true;
+                thread.sleep(5000);
+                currentWaitingProcess = false;
+                playRoomStart();
+                stoneScissorPaperGame = null;
+
+
+            }
+
+        }
+        if(state == GameState.SHOWERGAME && showerGame!= null) {
+
+            statusBarArrayList.get(0).setValue(hygiene);
+            statusBarArrayList.get(0).update();
+            hygiene = showerGame.update();
+
+
+
+
+
+        }
+    }
+
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
@@ -707,30 +746,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
     }
 
-    private void died()  {
-        if(!isDead){deadCounter = System.currentTimeMillis();}
 
-        isDead = true;
-        if( (System.currentTimeMillis() - deadCounter)/1000 > 5){
-            Log.d("deadtimer", "deadCounter: " +deadCounter+"  current: "+System.currentTimeMillis());
-            //repository.putIntoDb("timeRecord",lifeTimeRecord);
-            currentLifeTime = "0:0:0:0";
-            firstStartTime = timeStatusChanger.getCurrentDate();
-            statusBarArrayList.get(1).setValue(3);
-            fun = statusBarArrayList.get(1).getValue();
-            statusBarArrayList.get(1).update();
-            statusBarArrayList.get(0).setValue(3);
-            hygiene = statusBarArrayList.get(0).getValue();
-            statusBarArrayList.get(0).update();
-            statusBarArrayList.get(2).setValue(3);
-            foodSaturation = statusBarArrayList.get(2).getValue();
-            statusBarArrayList.get(2).update();
-            playRoomStart();
-            isDead = false;
-
-        }
-
-
-    }
 
 }

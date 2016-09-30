@@ -10,7 +10,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
-import android.util.Log;
+
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -18,9 +18,6 @@ import java.util.Random;
 import de.akricorp.ovonat.GameObject;
 import de.akricorp.ovonat.R;
 
-/**
- * Created by Hännes on 27.09.2016.
- */
 
 public class ShowerGame  {
 
@@ -31,11 +28,10 @@ public class ShowerGame  {
     ArrayList<GameObject> dropList2 = new ArrayList<>();
     float resolutionControlFactorX;
     float resolutionControlFactorY;
-    private static final int SENSOR_DELAY_MICROS = 50 * 1000; // 50ms
     private SensorManager mSensorManager;
     private float[] mValuesMagnet      = new float[3];
     private float[] mValuesAccel       = new float[3];
-    private float[] mValuesOrientation = new float[3];
+
     private Sensor mAccelerometer;
     float ovoMoveFactor;
     private GameObject playerWet;
@@ -54,7 +50,7 @@ public class ShowerGame  {
     Random r = new Random();
 
 
-    private float[] mRotationMatrix    = new float[9];
+
 
     public ShowerGame(Context context, float resolutionControlFactorX, float resolutionControlFactorY, int currentHygiene) {
         this.context = context;
@@ -81,12 +77,12 @@ public class ShowerGame  {
         ovoMoveFactor = mValuesAccel [1];
         if(playerWet.getX() < 700*resolutionControlFactorY ){
             if(ovoMoveFactor > 0){
-            Log.d("MoveFactor", "+1");
+
             playerWet.updateX((int)(10*ovoMoveFactor));
         }}
         if(playerWet.getX() > 0 ){
             if(ovoMoveFactor < 0){
-                Log.d("MoveFactor", "-1");
+
                 playerWet.updateX((int)(10*ovoMoveFactor));
             }}}
 
@@ -102,13 +98,13 @@ public class ShowerGame  {
     }
 
     private void rainDropFall() {
-        Log.d("drops", "timer :"+timer);
+
         if(dropList1.isEmpty()  && dropList2Ready){
             fillDropList(dropList1);
             dropList1Fall = true;
         }
         if(dropList1Fall) {
-            
+
             if (timer > 10) {
                 if (dropList1.get(0).getY() < 420 * resolutionControlFactorY) {
                     dropList1.get(0).updateY(10);

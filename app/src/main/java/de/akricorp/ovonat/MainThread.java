@@ -1,14 +1,11 @@
 package de.akricorp.ovonat;
 
 import android.graphics.Canvas;
-import android.util.Log;
 import android.view.SurfaceHolder;
 
-import java.util.concurrent.SynchronousQueue;
 
-/**
- * Created by Hannes on 23.07.2015.
- */
+
+
 public class MainThread extends Thread {
 
     private int FPS = 30;
@@ -17,7 +14,7 @@ public class MainThread extends Thread {
     private GamePanel gamePanel;
     private boolean running;
     private static Canvas canvas;
-    private boolean scaleDone = false;
+
 
 
     public MainThread(SurfaceHolder surfaceHolder, GamePanel gamePanel)
@@ -41,7 +38,7 @@ public class MainThread extends Thread {
             startTime = System.nanoTime();
             canvas = null;
 
-            //try locking the canvas for pixel editing
+
 
             try{
 
@@ -50,7 +47,7 @@ public class MainThread extends Thread {
                 canvas = this.surfaceHolder.lockCanvas();
                 synchronized (surfaceHolder){
 
-                    this.gamePanel.update(canvas);
+                    this.gamePanel.update();
 
                     this.gamePanel.draw(canvas);
 

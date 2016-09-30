@@ -8,11 +8,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.util.Log;
 
-/**
- * Created by Hännes on 30.09.2016.
- */
+
 
 public class InfoBox {
 
@@ -87,7 +84,7 @@ public class InfoBox {
         return new Rect(x,y, x+boxWidth,y+boxHeight);
     }
     public void draw(Canvas canvas){
-        Log.d("boxtest","screenshowed:"+screenShowed);
+
 
        if(screenShowed){
 

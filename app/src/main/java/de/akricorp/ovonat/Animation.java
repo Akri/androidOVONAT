@@ -2,17 +2,15 @@ package de.akricorp.ovonat;
 
 import android.graphics.Bitmap;
 
-/**
- * Created by Hannes on 28.07.2015.
- */
+
 public class Animation {
 
-    //comment
+
     private Bitmap[] frames;
     private int currentFrame;
     private long startTime;
     private long delay;
-    private boolean playedOnce;
+
 
 
 
@@ -24,7 +22,7 @@ public class Animation {
     }
 
     public void setDelay(long d){delay = d;}
-    public void setFrame(int i){currentFrame = i;}
+
 
     public void update(){
         long elapsedTime = (System.nanoTime()-startTime)/1000000;
@@ -38,7 +36,7 @@ public class Animation {
         if(currentFrame == frames.length)
         {
             currentFrame = 0;
-            playedOnce = true;
+
         }
     }
 
@@ -46,7 +44,6 @@ public class Animation {
         return frames[currentFrame];
     }
 
-    public int getCurrentFrame(){return currentFrame;}
-    public boolean getPlayedOnce(){return playedOnce;}
+
 
 }

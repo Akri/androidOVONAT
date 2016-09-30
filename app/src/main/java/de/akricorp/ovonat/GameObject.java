@@ -3,16 +3,10 @@ package de.akricorp.ovonat;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
-import android.util.Log;
 
-import static android.R.attr.animation;
-
-/**
- * Created by Hannes on 29.07.2015.
- */
 public  class GameObject {
-    protected int originalX; //x value for standart screenWidth
-    protected int originalY; //y value for standart screenWHeight
+    protected int originalX;
+    protected int originalY;
     public int x;
     public int y;
     public int numFrames;
@@ -45,7 +39,7 @@ public  class GameObject {
         isShown = true;
         setupBitmapAnimation(res);
 
-       // i*originalWidth,0, originalWidth,originalHeight
+
 
 
 
@@ -111,7 +105,7 @@ public  class GameObject {
     public void standartScaling(float resolutionControlFactorX, float resolutionControlFactorY){
         x= (int)((float)originalX*resolutionControlFactorX);
         y = (int)((float)originalY*resolutionControlFactorY);
-        Log.d("Positions new scale",this.getClass() + ": x: " + x + ", y: " + y);
+
     }
 
 

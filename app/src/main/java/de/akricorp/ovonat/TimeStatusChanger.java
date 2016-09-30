@@ -1,16 +1,13 @@
 package de.akricorp.ovonat;
 
-import android.util.Log;
 
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-import de.akricorp.ovonat.repository.DataRepository;
 
-/**
- * Created by Hännes on 29.09.2016.
- */
+
+
 
 public class TimeStatusChanger {
 
@@ -20,26 +17,22 @@ public class TimeStatusChanger {
     SimpleDateFormat dateFormat;
     Calendar calendar;
 
-    public TimeStatusChanger( ){
+    public TimeStatusChanger() {
         this.calendar = Calendar.getInstance();
-        this. dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        this.dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         this.date = dateFormat.format(calendar.getTime());
-
-
-
 
 
     }
 
 
-
-    public void getDataFromRepository(String firstStartTime){
+    public void getDataFromRepository(String firstStartTime) {
         this.firstStartTime = firstStartTime;
 
     }
 
-    public String getCurrentDate(){
-        return  this.date = dateFormat.format(calendar.getTime());
+    public String getCurrentDate() {
+        return this.date = dateFormat.format(calendar.getTime());
     }
 
     public int getChangeValue(String fromDate) {
@@ -51,8 +44,9 @@ public class TimeStatusChanger {
 
             long hourChange = timeChange / (60 * 60 * 1000) % 60;
             changeValue = (int) (hourChange / 3);
+        } else {
+            changeValue = 0;
         }
-         else{changeValue = 0;}
 
         return changeValue;
     }
@@ -60,26 +54,23 @@ public class TimeStatusChanger {
 
     public int[] getChangeTime(String fromDate) {
 
-        int[] changeValue = {0,0,0,0};
+        int[] changeValue = {0, 0, 0, 0};
         calendar = Calendar.getInstance();
 
-            long timeChange = calendar.getTime().getTime() - dateFormat.parse(fromDate, new ParsePosition(0)).getTime();
+        long timeChange = calendar.getTime().getTime() - dateFormat.parse(fromDate, new ParsePosition(0)).getTime();
 
-            long dayChange = timeChange / (24*60 * 60 * 1000) % 60;
-            long hourChange = timeChange / (60 * 60 * 1000) % 60;
-            long minuteChange = timeChange / ( 60 * 1000) % 60;
-            long secondChange = timeChange / (1000) % 60;
+        long dayChange = timeChange / (24 * 60 * 60 * 1000) % 60;
+        long hourChange = timeChange / (60 * 60 * 1000) % 60;
+        long minuteChange = timeChange / (60 * 1000) % 60;
+        long secondChange = timeChange / (1000) % 60;
 
-        changeValue[0] = (int)dayChange;
-        changeValue[1] = (int)hourChange;
-        changeValue[2] = (int)minuteChange;
-        changeValue[3] = (int)secondChange;
+        changeValue[0] = (int) dayChange;
+        changeValue[1] = (int) hourChange;
+        changeValue[2] = (int) minuteChange;
+        changeValue[3] = (int) secondChange;
 
 
         return changeValue;
     }
 
-    public void test(){
-        Log.d("timeTest", firstStartTime);
-    }
 }

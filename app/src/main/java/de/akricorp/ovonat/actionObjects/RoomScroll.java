@@ -1,27 +1,21 @@
 package de.akricorp.ovonat.actionObjects;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.util.Log;
+
 
 import java.util.ArrayList;
 
-import de.akricorp.ovonat.GameObject;
-import de.akricorp.ovonat.R;
-
-/**
- * Created by Hannes on 02.08.2015.
- */
 public class RoomScroll   {
 
 
 
     public boolean up = false;
-    //private Bitmap bg;
+
     private Rect bg;
     private boolean active = true;
     private Paint bgPaint = new Paint();
@@ -93,7 +87,7 @@ public class RoomScroll   {
     public void draw(Canvas canvas)
     {if(active){
         bg = new Rect(currentX-strokeWidth/2,currentY-strokeWidth/2,currentX+currentWidth+strokeWidth/2, currentY+strokeWidth/2 + currentHeight);
-        //canvas.drawBitmap(bg, x, y, null);
+
         canvas.drawRect(bg, bgPaint);
         if(up){
             for(int i = 0; i < 4;i++){
@@ -103,7 +97,7 @@ public class RoomScroll   {
     }}
 
 
-    public void scroll(){      //scrolls the roomScroll scrollbar down by changing its measurements
+    public void scroll(){
 
     if(!up){
         currentX = upX;
