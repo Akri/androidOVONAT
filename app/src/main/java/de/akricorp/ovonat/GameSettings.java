@@ -15,7 +15,7 @@ public class GameSettings {
     Context context;
     BitmapFactory.Options bitmapFactoryOptions = new BitmapFactory.Options();
 
-    public GameSettings(Context context){
+    public GameSettings(Context context) {
         this.context = context;
         bitmapFactoryOptions.inScaled = false;
     }
@@ -43,8 +43,9 @@ public class GameSettings {
             body3Res[1] = BitmapFactory.decodeResource(context.getResources(), R.drawable.eyes3, bitmapFactoryOptions);
             body3Res[2] = BitmapFactory.decodeResource(context.getResources(), R.drawable.glasses, bitmapFactoryOptions);
             return body3Res;
+        } else {
+            return null;
         }
-        else{return null;}
 
 
     }

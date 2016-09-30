@@ -11,7 +11,6 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
 
-
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -19,7 +18,7 @@ import de.akricorp.ovonat.GameObject;
 import de.akricorp.ovonat.R;
 
 
-public class ShowerGame  {
+public class ShowerGame {
 
     private Context context;
     private BitmapFactory.Options bitmapFactoryOptions = new BitmapFactory.Options();
@@ -29,8 +28,8 @@ public class ShowerGame  {
     float resolutionControlFactorX;
     float resolutionControlFactorY;
     private SensorManager mSensorManager;
-    private float[] mValuesMagnet      = new float[3];
-    private float[] mValuesAccel       = new float[3];
+    private float[] mValuesMagnet = new float[3];
+    private float[] mValuesAccel = new float[3];
 
     private Sensor mAccelerometer;
     float ovoMoveFactor;
@@ -50,8 +49,6 @@ public class ShowerGame  {
     Random r = new Random();
 
 
-
-
     public ShowerGame(Context context, float resolutionControlFactorX, float resolutionControlFactorY, int currentHygiene) {
         this.context = context;
         hygiene = currentHygiene;
@@ -60,13 +57,13 @@ public class ShowerGame  {
         bitmapFactoryOptions.inScaled = false;
         mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        playerWetRes[0]=BitmapFactory.decodeResource(context.getResources(), R.drawable.ovo3,bitmapFactoryOptions);
-        playerWetRes[2] = BitmapFactory.decodeResource(context.getResources(), R.drawable.eyes3,bitmapFactoryOptions);
-        playerWetRes[1] = BitmapFactory.decodeResource(context.getResources(), R.drawable.ovo3wetlayer,bitmapFactoryOptions);
+        playerWetRes[0] = BitmapFactory.decodeResource(context.getResources(), R.drawable.ovo3, bitmapFactoryOptions);
+        playerWetRes[2] = BitmapFactory.decodeResource(context.getResources(), R.drawable.eyes3, bitmapFactoryOptions);
+        playerWetRes[1] = BitmapFactory.decodeResource(context.getResources(), R.drawable.ovo3wetlayer, bitmapFactoryOptions);
 
-        playerWet = new GameObject( playerWetRes, 50, 350, 100, 100, resolutionControlFactorX, resolutionControlFactorY,3);
+        playerWet = new GameObject(playerWetRes, 50, 350, 100, 100, resolutionControlFactorX, resolutionControlFactorY, 3);
 
-        mSensorManager.registerListener(mEventListener,mAccelerometer ,mSensorManager.SENSOR_DELAY_NORMAL);
+        mSensorManager.registerListener(mEventListener, mAccelerometer, mSensorManager.SENSOR_DELAY_NORMAL);
         fillDropList(dropList1);
     }
 
@@ -74,36 +71,38 @@ public class ShowerGame  {
     public void ovoController() {
 
 
-        ovoMoveFactor = mValuesAccel [1];
-        if(playerWet.getX() < 700*resolutionControlFactorY ){
-            if(ovoMoveFactor > 0){
+        ovoMoveFactor = mValuesAccel[1];
+        if (playerWet.getX() < 700 * resolutionControlFactorY) {
+            if (ovoMoveFactor > 0) {
 
-            playerWet.updateX((int)(10*ovoMoveFactor));
-        }}
-        if(playerWet.getX() > 0 ){
-            if(ovoMoveFactor < 0){
+                playerWet.updateX((int) (10 * ovoMoveFactor));
+            }
+        }
+        if (playerWet.getX() > 0) {
+            if (ovoMoveFactor < 0) {
 
-                playerWet.updateX((int)(10*ovoMoveFactor));
-            }}}
+                playerWet.updateX((int) (10 * ovoMoveFactor));
+            }
+        }
+    }
 
 
+    public void fillDropList(ArrayList<GameObject> list) {
+        for (int i = 0; i < 3; i++) {
+            int xPosition = r.nextInt((int) (750));
+            dropRes[0] = BitmapFactory.decodeResource(context.getResources(), R.drawable.drop, bitmapFactoryOptions);
 
-    public void fillDropList(ArrayList<GameObject> list){
-        for(int i = 0; i < 3; i++){
-            int xPosition = r.nextInt((int)(750));
-            dropRes[0] = BitmapFactory.decodeResource(context.getResources(), R.drawable.drop,bitmapFactoryOptions);
-
-        list.add(new GameObject(dropRes,xPosition,  (int)(-100*resolutionControlFactorX),47, 80,   resolutionControlFactorX,resolutionControlFactorY,1));
+            list.add(new GameObject(dropRes, xPosition, (int) (-100 * resolutionControlFactorX), 47, 80, resolutionControlFactorX, resolutionControlFactorY, 1));
         }
     }
 
     private void rainDropFall() {
 
-        if(dropList1.isEmpty()  && dropList2Ready){
+        if (dropList1.isEmpty() && dropList2Ready) {
             fillDropList(dropList1);
             dropList1Fall = true;
         }
-        if(dropList1Fall) {
+        if (dropList1Fall) {
 
             if (timer > 10) {
                 if (dropList1.get(0).getY() < 420 * resolutionControlFactorY) {
@@ -120,75 +119,82 @@ public class ShowerGame  {
                 }
             }
             if (timer > 70) {
-                if (dropList1.get(2).getY() < 420* resolutionControlFactorY) {
+                if (dropList1.get(2).getY() < 420 * resolutionControlFactorY) {
                     dropList1.get(2).updateY(10);
-                }else{dropList2Ready = false;  }
-
-            if (timer ==140) {
-
-                dropList1Fall = false;
-                dropList1.clear();
-                dropList1Ready = true;
-
-            }
-        }}
-
-
-            if(dropList2.isEmpty()  && dropList1Ready){
-
-                dropList2Fall = true;
-                fillDropList(dropList2);
-
-            }
-            if(dropList2Fall) {
-
-                if (timer > 150) {
-                    if (dropList2.get(0).getY() < 420 * resolutionControlFactorY) {
-                        dropList2.get(0).updateY(10);
-                    } else {
-                        dropList2.get(0).hide();
-                    }
-                }
-                if (timer > 180) {
-                    if (dropList2.get(1).getY() < 420 * resolutionControlFactorY) {
-                        dropList2.get(1).updateY(10);
-                    } else {
-                        dropList2.get(1).hide();
-                    }
-                }
-                if (timer > 210) {
-                    if (dropList2.get(2).getY() < 420 * resolutionControlFactorY) {
-                        dropList2.get(2).updateY(10);
-                    } else {
-                        dropList1Ready = false;
-                    }
-
-                    if (timer == 280) {
-                        dropList2Fall = false;
-                        dropList2.clear();
-                        dropList2Ready = true;
-
-                    }
+                } else {
+                    dropList2Ready = false;
                 }
 
+                if (timer == 140) {
+
+                    dropList1Fall = false;
+                    dropList1.clear();
+                    dropList1Ready = true;
+
+                }
             }
+        }
+
+
+        if (dropList2.isEmpty() && dropList1Ready) {
+
+            dropList2Fall = true;
+            fillDropList(dropList2);
+
+        }
+        if (dropList2Fall) {
+
+            if (timer > 150) {
+                if (dropList2.get(0).getY() < 420 * resolutionControlFactorY) {
+                    dropList2.get(0).updateY(10);
+                } else {
+                    dropList2.get(0).hide();
+                }
+            }
+            if (timer > 180) {
+                if (dropList2.get(1).getY() < 420 * resolutionControlFactorY) {
+                    dropList2.get(1).updateY(10);
+                } else {
+                    dropList2.get(1).hide();
+                }
+            }
+            if (timer > 210) {
+                if (dropList2.get(2).getY() < 420 * resolutionControlFactorY) {
+                    dropList2.get(2).updateY(10);
+                } else {
+                    dropList1Ready = false;
+                }
+
+                if (timer == 280) {
+                    dropList2Fall = false;
+                    dropList2.clear();
+                    dropList2Ready = true;
+
+                }
+            }
+
+        }
 
     }
 
 
-    public void dropCollisionCheck(){
-        if(dropList1Fall){
-            for(int i = 0; i < dropList1.size();i++){
-               if(Rect.intersects(dropList1.get(i).getRectangle(), playerWet.getRectangle())&&dropList1.get(i).getY()<(int)( 420*resolutionControlFactorY)){
-                   if(hygiene < 10&& dropList1.get(i).isShown){hygiene++;}
-                   dropList1.get(i).hide();
+    public void dropCollisionCheck() {
+        if (dropList1Fall) {
+            for (int i = 0; i < dropList1.size(); i++) {
+                if (Rect.intersects(dropList1.get(i).getRectangle(), playerWet.getRectangle()) && dropList1.get(i).getY() < (int) (420 * resolutionControlFactorY)) {
+                    if (hygiene < 10 && dropList1.get(i).isShown) {
+                        hygiene++;
+                    }
+                    dropList1.get(i).hide();
                 }
             }
         }
-        if(dropList2Fall){
-            for(int i = 0; i < dropList2.size();i++){
-                if(Rect.intersects(dropList2.get(i).getRectangle(), playerWet.getRectangle())&&dropList2.get(i).getY()<(int)( 420*resolutionControlFactorY)){
-                    if(hygiene < 10&& dropList2.get(i).isShown){hygiene++;}
+        if (dropList2Fall) {
+            for (int i = 0; i < dropList2.size(); i++) {
+                if (Rect.intersects(dropList2.get(i).getRectangle(), playerWet.getRectangle()) && dropList2.get(i).getY() < (int) (420 * resolutionControlFactorY)) {
+                    if (hygiene < 10 && dropList2.get(i).isShown) {
+                        hygiene++;
+                    }
                     dropList2.get(i).hide();
                 }
             }
@@ -198,9 +204,12 @@ public class ShowerGame  {
     }
 
 
-    public int update(){
-        if(timer < timerEnd){timer++;}
-        else{timer = 0;}
+    public int update() {
+        if (timer < timerEnd) {
+            timer++;
+        } else {
+            timer = 0;
+        }
 
         ovoController();
         rainDropFall();
@@ -210,18 +219,18 @@ public class ShowerGame  {
     }
 
 
-
-
     public void draw(Canvas canvas) {
         playerWet.draw(canvas);
-        if(dropList2Ready){
-        for(int i = 0;  i < dropList1.size(); i++){
-            dropList1.get(i).draw(canvas);
-        }}
-        if(dropList1Ready){
-            for(int i = 0;  i < dropList2.size(); i++){
+        if (dropList2Ready) {
+            for (int i = 0; i < dropList1.size(); i++) {
+                dropList1.get(i).draw(canvas);
+            }
+        }
+        if (dropList1Ready) {
+            for (int i = 0; i < dropList2.size(); i++) {
                 dropList2.get(i).draw(canvas);
-            }}
+            }
+        }
 
 
     }
@@ -243,7 +252,7 @@ public class ShowerGame  {
             }
         }
 
-};
+    };
 }
 
 

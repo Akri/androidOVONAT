@@ -14,18 +14,20 @@ public class MainActivity extends Activity {
     DataRepository repository;
     TimeStatusChanger timeStatusChanger;
     Context context = this;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //fullscreen
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.layout);;
+        setContentView(R.layout.layout);
+        ;
         this.repository = new DataRepository(this);  //repository is being created
         this.timeStatusChanger = new TimeStatusChanger();
         repository.open();
         repository.setCursor();
 
-        if(repository.repositoryIsEmpty()){
+        if (repository.repositoryIsEmpty()) {
             repository.firstSetup(timeStatusChanger.getCurrentDate());
         }
 

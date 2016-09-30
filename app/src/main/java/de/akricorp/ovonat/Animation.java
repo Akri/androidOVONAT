@@ -12,38 +12,34 @@ public class Animation {
     private long delay;
 
 
-
-
-    public void setFrames(Bitmap[] frames)
-    {
+    public void setFrames(Bitmap[] frames) {
         this.frames = frames;
         currentFrame = 0;
         startTime = System.nanoTime();
     }
 
-    public void setDelay(long d){delay = d;}
+    public void setDelay(long d) {
+        delay = d;
+    }
 
 
-    public void update(){
-        long elapsedTime = (System.nanoTime()-startTime)/1000000;
+    public void update() {
+        long elapsedTime = (System.nanoTime() - startTime) / 1000000;
 
-        if(elapsedTime>delay)
-        {
+        if (elapsedTime > delay) {
             currentFrame++;
             startTime = System.nanoTime();
 
         }
-        if(currentFrame == frames.length)
-        {
+        if (currentFrame == frames.length) {
             currentFrame = 0;
 
         }
     }
 
-    public Bitmap getImage(){
+    public Bitmap getImage() {
         return frames[currentFrame];
     }
-
 
 
 }

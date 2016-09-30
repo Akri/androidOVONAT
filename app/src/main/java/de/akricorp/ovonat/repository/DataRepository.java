@@ -10,10 +10,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 
-
-
 import java.io.File;
-
 
 
 public class DataRepository {
@@ -24,7 +21,7 @@ public class DataRepository {
     private static final int DATABASE_VERSION = 1;
 
     private static final String DATABASE_TABLE = "databaseItems";
-    private static final String KEY_LIFE_TIME_RECORD ="timeRecord";
+    private static final String KEY_LIFE_TIME_RECORD = "timeRecord";
     public static final String KEY_ID = "_id";
     public static final String KEY_FIRST_START_TIME = "firstStartTime";
     public static final String KEY_LAST_CLOSE_TIME = "fastCloseTime";
@@ -38,7 +35,6 @@ public class DataRepository {
     public static final String KEY_FOOD_SATURATION = "foodSaturation";
     public static final String KEY_HYGIENE = "hygiene";
     public static final String KEY_FUN = "fun";
-
 
 
     public static final int FIRST_START_TIME_INDEX = 0;
@@ -64,10 +60,10 @@ public class DataRepository {
 
     }
 
-    public void setCursor(){
+    public void setCursor() {
         this.cursor = db.query(DATABASE_TABLE, new String[]{KEY_FIRST_START_TIME,
-                KEY_LAST_CLOSE_TIME,KEY_MINI_COUNT,KEY_CURRENT_BOOTS, KEY_CURRENT_HAIR,
-                KEY_CURRENT_BODY, KEY_FOOD_SATURATION, KEY_HYGIENE, KEY_FUN,KEY_LIFE_TIME_RECORD}, null, null, null, null, null);
+                KEY_LAST_CLOSE_TIME, KEY_MINI_COUNT, KEY_CURRENT_BOOTS, KEY_CURRENT_HAIR,
+                KEY_CURRENT_BODY, KEY_FOOD_SATURATION, KEY_HYGIENE, KEY_FUN, KEY_LIFE_TIME_RECORD}, null, null, null, null, null);
 
     }
 
@@ -85,17 +81,13 @@ public class DataRepository {
     }
 
 
+    public String getData(String requestedData) {
 
-
-
-
-    public String getData(String requestedData){
-
-        String returnString="";
+        String returnString = "";
 
         cursor.moveToFirst();
 
-        switch(requestedData) {
+        switch (requestedData) {
 
             case "firstStartTime":
                 returnString = cursor.getString(FIRST_START_TIME_INDEX);
@@ -132,10 +124,10 @@ public class DataRepository {
         return returnString;
     }
 
-    public int putIntoDb(String changedData, String newValue){
+    public int putIntoDb(String changedData, String newValue) {
         ContentValues cv = new ContentValues();
 
-        switch(changedData){
+        switch (changedData) {
 
             case "firstStartTime":
 
@@ -169,12 +161,10 @@ public class DataRepository {
                 return db.update(DATABASE_TABLE, cv, null, null);
             case "timeRecord":
                 cv.put(KEY_LIFE_TIME_RECORD, newValue);
-                return db.update(DATABASE_TABLE,cv,null,null);
+                return db.update(DATABASE_TABLE, cv, null, null);
         }
         return 0;
     }
-
-
 
 
     private class DataDBOpenHelper extends SQLiteOpenHelper {
@@ -183,10 +173,9 @@ public class DataRepository {
         private static final String DATABASE_CREATE = "CREATE TABLE "
                 + DATABASE_TABLE + "(" + KEY_ID
                 + " INTEGER primary key autoincrement, " + KEY_FIRST_START_TIME + " text, "
-                + KEY_LAST_CLOSE_TIME + " text, " + KEY_MINI_COUNT +  " text ," + KEY_CURRENT_BOOTS + " text, "
+                + KEY_LAST_CLOSE_TIME + " text, " + KEY_MINI_COUNT + " text ," + KEY_CURRENT_BOOTS + " text, "
                 + KEY_CURRENT_HAIR + " text, " + KEY_CURRENT_BODY + " text, "
-                + KEY_FOOD_SATURATION +" text, "+ KEY_HYGIENE +" text , "+ KEY_FUN +" text, "+KEY_LIFE_TIME_RECORD+" text);";
-
+                + KEY_FOOD_SATURATION + " text, " + KEY_HYGIENE + " text , " + KEY_FUN + " text, " + KEY_LIFE_TIME_RECORD + " text);";
 
 
         public DataDBOpenHelper(Context c, String dbname,
@@ -199,8 +188,6 @@ public class DataRepository {
             db.execSQL(DATABASE_CREATE);
 
 
-
-
         }
 
         @Override
@@ -210,17 +197,16 @@ public class DataRepository {
     }
 
 
-    public void firstSetup(String currentDate){
+    public void firstSetup(String currentDate) {
 
-         cursor = db.query(DATABASE_TABLE, new String[]{KEY_FIRST_START_TIME,
-                KEY_LAST_CLOSE_TIME,KEY_MINI_COUNT,KEY_CURRENT_BOOTS, KEY_CURRENT_HAIR,
+        cursor = db.query(DATABASE_TABLE, new String[]{KEY_FIRST_START_TIME,
+                KEY_LAST_CLOSE_TIME, KEY_MINI_COUNT, KEY_CURRENT_BOOTS, KEY_CURRENT_HAIR,
                 KEY_CURRENT_BODY, KEY_FOOD_SATURATION, KEY_HYGIENE, KEY_FUN, KEY_LIFE_TIME_RECORD}, null, null, null, null, null);
 
 
-
-        if(!cursor.moveToFirst()) {
+        if (!cursor.moveToFirst()) {
             ContentValues firstOvoValues = new ContentValues();
-            firstOvoValues.put(KEY_FIRST_START_TIME, currentDate );
+            firstOvoValues.put(KEY_FIRST_START_TIME, currentDate);
             firstOvoValues.put(KEY_LAST_CLOSE_TIME, "0");
             firstOvoValues.put(KEY_MINI_COUNT, "3");
             firstOvoValues.put(KEY_CURRENT_BOOTS, "4");
@@ -229,25 +215,23 @@ public class DataRepository {
             firstOvoValues.put(KEY_FOOD_SATURATION, "3");
             firstOvoValues.put(KEY_HYGIENE, "4");
             firstOvoValues.put(KEY_FUN, "5");
-            firstOvoValues.put(KEY_LIFE_TIME_RECORD,"0:0:0:0");
+            firstOvoValues.put(KEY_LIFE_TIME_RECORD, "0:0:0:0");
             db.insert(DATABASE_TABLE, null, firstOvoValues);
         }
 
     }
 
-    public boolean repositoryIsEmpty(){
-        if (cursor.moveToFirst())
-        {
+    public boolean repositoryIsEmpty() {
+        if (cursor.moveToFirst()) {
             return false;
 
-        } else
-        {
+        } else {
 
             return true;
         }
     }
 
-    public void deleteDb(Context context){
+    public void deleteDb(Context context) {
         context.deleteDatabase(DATABASE_NAME);
     }
 }
