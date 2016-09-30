@@ -20,7 +20,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         //fullscreen
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.loadscreen_layout);
+        setContentView(R.layout.layout);;
         this.repository = new DataRepository(this);  //repository is being created
         this.timeStatusChanger = new TimeStatusChanger();
         repository.open();

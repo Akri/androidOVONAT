@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
+import android.icu.text.IDNA;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -57,6 +58,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     GameState state = GameState.PLAYROOM;
     private TimeStatusChanger timeStatusChanger;
     int barChangerTimer = 0;
+    private InfoBox infobox;
 
 
     String firstStartTime;
@@ -68,6 +70,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     int foodSaturation;
     int hygiene;
     int fun;
+    String lifeTimeRecord = "lifeTimeRecord";
+    String currentLifeTime = "";
 
 
     public GamePanel(Context context) {
@@ -104,6 +108,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         this.foodSaturation=Integer.parseInt(repository.getData("foodSaturation"));
         this.hygiene=Integer.parseInt(repository.getData("hygiene"));
         this.fun=Integer.parseInt(repository.getData("fun"));
+        this.lifeTimeRecord= repository.getData("timeRecord");
 
 
 
@@ -148,6 +153,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         repository.putIntoDb("foodSaturation",""+foodSaturation);
         repository.putIntoDb("hygiene",""+hygiene);
         repository.putIntoDb("fun",""+fun);
+        repository.putIntoDb("timeRecord",lifeTimeRecord);
 
     }
 
@@ -155,10 +161,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        timeStatusChanger.getDataFromRepository(firstStartTime, lastCloseTime);
-        hygiene         -= timeStatusChanger.getChangeValue();
-        foodSaturation  -= timeStatusChanger.getChangeValue();
-        fun             -= timeStatusChanger.getChangeValue();
+        timeStatusChanger.getDataFromRepository(firstStartTime);
+        hygiene         -= timeStatusChanger.getChangeValue(lastCloseTime);
+        foodSaturation  -= timeStatusChanger.getChangeValue(lastCloseTime);
+        fun             -= timeStatusChanger.getChangeValue(lastCloseTime);
 
 
         DisplayMetrics dm = new DisplayMetrics();
@@ -175,7 +181,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         createStatusBars();
         initActionObjects();
 
-
+        infobox = new InfoBox(context, resolutionControlFactorX,resolutionControlFactorY,lifeTimeRecord,currentLifeTime);
         room = new Room(BitmapFactory.decodeResource(getResources(), currentRoom,bitmapFactoryOptions), resolutionControlFactorX,resolutionControlFactorY);
         player =new GameObject( gameSettings.getPlayer(currentBody), 300, 150,  100, 100, resolutionControlFactorX, resolutionControlFactorY,3);
 
@@ -209,7 +215,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     private void kitchenRoomStart(){
 
         state = GameState.KITCHEN;
-        player.setX(600); player.setY(350);
+        player.setX(500); player.setY(350);
         player.show();
     }
 
@@ -315,6 +321,23 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
             roomScroll.scroll();
 
         }
+
+        if(infobox.boxShowed){
+            Log.d("boxtest","showed");
+            if (collision(click, infobox.getRectangle())) {
+               Log.d("boxtest","kk");
+                if(!infobox.screenShowed){
+               infobox.showScreen();
+                    roomScroll.hide();
+                }
+                else{infobox.hideScreen();
+                roomScroll.show();}
+
+
+            }
+        }
+
+
       if(state == GameState.PLAYROOM){
        if (collision(click, stoneScissorPaperObject.getRectangle())) {
 
@@ -389,6 +412,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         if(barChangerTimer <= 100){
             barChangerTimer++;
         }
+
         else{barChangerTimer =0;}
         if(barChangerTimer == 100 && state != GameState.SHOWERGAME&& state != GameState.STONEPAPER){
             for(int i =0; i < statusBarArrayList.size();i++){
@@ -398,6 +422,23 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                 if(i == 2){foodSaturation = statusBarArrayList.get(2).getValue();}
 
         }}
+        int[]currentLifeTimeArray = timeStatusChanger.getChangeTime(firstStartTime);
+        currentLifeTime = currentLifeTimeArray[0]+":"+currentLifeTimeArray[1]+":"+currentLifeTimeArray[2]+":"+currentLifeTimeArray[3];
+
+
+
+        String[] currentLifeTimeSplit = currentLifeTime.split(":");
+        String[] currentRecordSplit = lifeTimeRecord.split(":");
+        Log.d("textbug", "test:"+currentRecordSplit[1]);
+        for(int i = 0; i < currentLifeTimeArray.length;i++){
+            if(Integer.parseInt(currentLifeTimeSplit[i])>Integer.parseInt(currentRecordSplit[i])){
+                lifeTimeRecord = currentLifeTime;
+                infobox.setLifeTimeRecord(lifeTimeRecord);
+                Log.d("textbug", "record neu gesetzt");
+                break;
+            }
+        }
+        infobox.setCurrentLifeTime(currentLifeTime);
 
 
         if (player.getPlaying()) {
@@ -438,6 +479,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         switch (state) {
 
             case KITCHEN:
+                infobox.showBox();
 
                 for(GameObject object : playRoomObjects){
                     object.hide();
@@ -457,6 +499,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                 currentRoom = R.drawable.kitchen;
                 break;
             case PLAYROOM:
+                infobox.showBox();
                 for(GameObject object : playRoomObjects){
                     object.update();
                     object.show();
@@ -475,6 +518,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                 currentRoom = R.drawable.playroom;
                 break;
             case STONEPAPER:
+                infobox.showBox();
                 for(GameObject object : playRoomObjects){
                     object.hide();
                 }
@@ -494,6 +538,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
 
             case SHOWERGAME:
+                infobox.hideBox();
                 for(GameObject object : playRoomObjects){
                     object.hide();
                 }
@@ -510,6 +555,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                 currentRoom = R.drawable.bathroom;
                 break;
             case BATH:
+                infobox.showBox();
                 for(GameObject object : playRoomObjects){
                     object.hide();
                 }
@@ -528,6 +574,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                 currentRoom = R.drawable.bathroom;
                 break;
             case OUTSIDE:
+                infobox.showBox();
                 for(GameObject object : playRoomObjects){
                     object.hide();
                 }
@@ -554,7 +601,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     public void draw(Canvas canvas) {
         super.draw(canvas);
 
-        timeStatusChanger.getChangeValue();
+
 
 
         setCurrentBackground();
@@ -580,6 +627,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
             switch (state) {
                 case STONEPAPER:
+
                     player.draw(canvas);
                     stoneScissorPaperGame.draw(canvas);
                     break;
@@ -623,6 +671,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                     break;
 
             }
+            infobox.draw(canvas);
             roomScroll.draw(canvas);
             canvas.restoreToCount(savedState);
         }
@@ -633,6 +682,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         for (int i = 0; i < statusBarArrayList.size(); i++) {
             statusBarArrayList.get(i).draw(canvas);
         }
+
 
 
     }

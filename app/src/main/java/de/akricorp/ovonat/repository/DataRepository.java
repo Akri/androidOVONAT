@@ -33,7 +33,7 @@ public class DataRepository {
     private static final int DATABASE_VERSION = 1;
 
     private static final String DATABASE_TABLE = "databaseItems";
-
+    private static final String KEY_LIFE_TIME_RECORD ="timeRecord";
     public static final String KEY_ID = "_id";
     public static final String KEY_FIRST_START_TIME = "firstStartTime";
     public static final String KEY_LAST_CLOSE_TIME = "fastCloseTime";
@@ -59,6 +59,7 @@ public class DataRepository {
     public static final int KEY_FOOD_SATURATION_INDEX = 6;
     public static final int HYGIENE_INDEX = 7;
     public static final int FUN_INDEX = 8;
+    public static final int LIFE_TIME_RECORD_INDEX = 9;
 
 
     private DataDBOpenHelper dbHelper;
@@ -75,7 +76,7 @@ public class DataRepository {
     public void setCursor(){
         this.cursor = db.query(DATABASE_TABLE, new String[]{KEY_FIRST_START_TIME,
                 KEY_LAST_CLOSE_TIME,KEY_MINI_COUNT,KEY_CURRENT_BOOTS, KEY_CURRENT_HAIR,
-                KEY_CURRENT_BODY, KEY_FOOD_SATURATION, KEY_HYGIENE, KEY_FUN}, null, null, null, null, null);
+                KEY_CURRENT_BODY, KEY_FOOD_SATURATION, KEY_HYGIENE, KEY_FUN,KEY_LIFE_TIME_RECORD}, null, null, null, null, null);
 
     }
 
@@ -176,6 +177,8 @@ public class DataRepository {
             case "fun":
                 returnString = cursor.getString(FUN_INDEX);
                 break;
+            case "timeRecord":
+                returnString = cursor.getString(LIFE_TIME_RECORD_INDEX);
         }
         return returnString;
     }
@@ -216,6 +219,9 @@ public class DataRepository {
             case "fun":
                 cv.put(KEY_FUN, newValue);
                 return db.update(DATABASE_TABLE, cv, null, null);
+            case "lifeTime":
+                cv.put(KEY_LIFE_TIME_RECORD, newValue);
+                return db.update(DATABASE_TABLE,cv,null,null);
         }
         return 0;
     }
@@ -238,7 +244,7 @@ public class DataRepository {
                 + " INTEGER primary key autoincrement, " + KEY_FIRST_START_TIME + " text, "
                 + KEY_LAST_CLOSE_TIME + " text, " + KEY_MINI_COUNT +  " text ," + KEY_CURRENT_BOOTS + " text, "
                 + KEY_CURRENT_HAIR + " text, " + KEY_CURRENT_BODY + " text, "
-                + KEY_FOOD_SATURATION +" text, "+ KEY_HYGIENE +" text , "+ KEY_FUN +" text);";
+                + KEY_FOOD_SATURATION +" text, "+ KEY_HYGIENE +" text , "+ KEY_FUN +" text, "+KEY_LIFE_TIME_RECORD+" text);";
 
 
 
@@ -270,7 +276,7 @@ public class DataRepository {
 
          cursor = db.query(DATABASE_TABLE, new String[]{KEY_FIRST_START_TIME,
                 KEY_LAST_CLOSE_TIME,KEY_MINI_COUNT,KEY_CURRENT_BOOTS, KEY_CURRENT_HAIR,
-                KEY_CURRENT_BODY, KEY_FOOD_SATURATION, KEY_HYGIENE, KEY_FUN}, null, null, null, null, null);
+                KEY_CURRENT_BODY, KEY_FOOD_SATURATION, KEY_HYGIENE, KEY_FUN, KEY_LIFE_TIME_RECORD}, null, null, null, null, null);
 
 
 
@@ -285,6 +291,7 @@ public class DataRepository {
             firstOvoValues.put(KEY_FOOD_SATURATION, "3");
             firstOvoValues.put(KEY_HYGIENE, "3");
             firstOvoValues.put(KEY_FUN, "3");
+            firstOvoValues.put(KEY_LIFE_TIME_RECORD,"0:0:0:0");
             db.insert(DATABASE_TABLE, null, firstOvoValues);
         }
 

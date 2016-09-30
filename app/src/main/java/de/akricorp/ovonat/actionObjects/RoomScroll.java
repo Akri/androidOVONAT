@@ -83,16 +83,13 @@ public class RoomScroll   {
 
     }
 
+    public void hide(){active = false;}
+    public void show(){active = true;}
 
 
 
 
 
-
-    public void update()
-    {
-
-    }
     public void draw(Canvas canvas)
     {if(active){
         bg = new Rect(currentX-strokeWidth/2,currentY-strokeWidth/2,currentX+currentWidth+strokeWidth/2, currentY+strokeWidth/2 + currentHeight);
@@ -144,8 +141,7 @@ public class RoomScroll   {
     public Rect[] getRoomButtonRectangles(){
         Rect[] roomRectangles = new Rect[4];
         for(int i = 0 ; i < roomRectangles.length; i++){
-           /* upX+resolutionControlFactor+115*i,upY,
-            (int)(80*resolutionControlFactor),(int)(80*resolutionControlFactor);*/
+
              roomRectangles[i] = new Rect((int)(upX+115*i*resolutionControlFactorX),currentY,(int)(upX+(115)*i*resolutionControlFactorX+80*resolutionControlFactorX),(int)((upY+80*resolutionControlFactorY)*resolutionControlFactorY));
         }
 
@@ -153,26 +149,6 @@ public class RoomScroll   {
         return roomRectangles;
     }
 
-  /*  public void scroll()
-    {
-
-        long startTime;
-        long timeMillis;
-        long waitTime = 3;
-        startTime = System.nanoTime();
-        while(scrolledOut){
-
-            timeMillis = (System.nanoTime()-startTime)/1000000000;
-
-
-            if(timeMillis >= waitTime){
-                scrollDown();
-
-
-
-
-            }}
-            }*/
 
 
 
