@@ -46,6 +46,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     private GameObject hangerObject;
     private float resolutionControlFactorX;
     private float resolutionControlFactorY;
+    private int screenWidth;
+    private int screenHeight;
     StatusBar funBar;
     StatusBar hygeneBar;
     StatusBar saturationBar;
@@ -59,6 +61,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     private TimeStatusChanger timeStatusChanger;
     int barChangerTimer = 0;
     private InfoBox infobox;
+    private boolean isDead = false;
+    private long deadCounter = 0;
+    private int frapsPerStatusLose = 2000;
+
+    Bitmap deadOvo;
+    Canvas canvas;
 
 
     String firstStartTime;
@@ -70,23 +78,23 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     int foodSaturation;
     int hygiene;
     int fun;
-    String lifeTimeRecord = "lifeTimeRecord";
-    String currentLifeTime = "";
+    String lifeTimeRecord;
+    String currentLifeTime;
 
 
     public GamePanel(Context context) {
         super(context);
         this.context = context;
         gameSettings = new GameSettings(context);
-        // add callback to surfaceholder to intercept events
+
         getHolder().addCallback(this);
         timeStatusChanger = new TimeStatusChanger();
         initDb(context);
-        Log.d("funfail", "startdb: "+Integer.parseInt(repository.getData("fun")));
+
 
         thread = new MainThread(getHolder(), this);
 
-        //make gamePanel focusable so it can handle events
+
 
         setFocusable(true);
 
@@ -98,7 +106,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         repository = new DataRepository(context);
         repository.open();
         repository.setCursor();
-
+        Log.d("lifeTimeR", "local"+lifeTimeRecord);
         this.firstStartTime = repository.getData("firstStartTime");
         this.lastCloseTime = repository.getData("lastCloseTime");
         this.miniCount = Integer.parseInt(repository.getData("miniCount"));
@@ -116,6 +124,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
 
     }
 
@@ -154,6 +163,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         repository.putIntoDb("hygiene",""+hygiene);
         repository.putIntoDb("fun",""+fun);
         repository.putIntoDb("timeRecord",lifeTimeRecord);
+        repository.putIntoDb("firstStartTime",firstStartTime);
 
     }
 
@@ -169,8 +179,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
         DisplayMetrics dm = new DisplayMetrics();
         ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(dm);
-        int screenWidth = dm.widthPixels;
-        int screenHeight = dm.heightPixels;
+        this.screenWidth = dm.widthPixels;
+        this.screenHeight = dm.heightPixels;
         bitmapFactoryOptions.inScaled = false;
 
 
@@ -184,7 +194,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         infobox = new InfoBox(context, resolutionControlFactorX,resolutionControlFactorY,lifeTimeRecord,currentLifeTime);
         room = new Room(BitmapFactory.decodeResource(getResources(), currentRoom,bitmapFactoryOptions), resolutionControlFactorX,resolutionControlFactorY);
         player =new GameObject( gameSettings.getPlayer(currentBody), 300, 150,  100, 100, resolutionControlFactorX, resolutionControlFactorY,3);
-
+        deadOvo = BitmapFactory.decodeResource(context.getResources(), R.drawable.gravestone,bitmapFactoryOptions);
+        deadOvo = Bitmap.createScaledBitmap(deadOvo,screenWidth,screenHeight,false);
 
         roomScroll = new RoomScroll(screenWidth, screenHeight, resolutionControlFactorX,resolutionControlFactorY, BitmapFactory.decodeResource(getResources(), R.drawable.kitchenbutton,bitmapFactoryOptions), BitmapFactory.decodeResource(getResources(), R.drawable.playroombutton), BitmapFactory.decodeResource(getResources(), R.drawable.outsidebutton), BitmapFactory.decodeResource(getResources(), R.drawable.bathbutton));
         roomScroll.scrollUp();
@@ -323,12 +334,14 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         }
 
         if(infobox.boxShowed){
-            Log.d("boxtest","showed");
+
             if (collision(click, infobox.getRectangle())) {
-               Log.d("boxtest","kk");
+                 died();
                 if(!infobox.screenShowed){
-               infobox.showScreen();
+                     infobox.showScreen();
                     roomScroll.hide();
+
+
                 }
                 else{infobox.hideScreen();
                 roomScroll.show();}
@@ -395,6 +408,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
             }}}
 
 
+
+
+
         return super.onTouchEvent(event);
     }
 
@@ -406,15 +422,16 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     }
 
 
-    public void update() throws InterruptedException {
+    public void update(Canvas canvas) throws InterruptedException {
+        this.canvas = canvas;
 
-        Log.d("cloth",""+currentBody);
-        if(barChangerTimer <= 100){
+        Log.d("timer",""+barChangerTimer);
+        if(barChangerTimer <= frapsPerStatusLose){
             barChangerTimer++;
         }
 
         else{barChangerTimer =0;}
-        if(barChangerTimer == 100 && state != GameState.SHOWERGAME&& state != GameState.STONEPAPER){
+        if(barChangerTimer == frapsPerStatusLose && state != GameState.SHOWERGAME&& state != GameState.STONEPAPER){
             for(int i =0; i < statusBarArrayList.size();i++){
             statusBarArrayList.get(i).addValue(-1);
             if(i == 0){hygiene = statusBarArrayList.get(0).getValue();}
@@ -422,6 +439,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                 if(i == 2){foodSaturation = statusBarArrayList.get(2).getValue();}
 
         }}
+
         int[]currentLifeTimeArray = timeStatusChanger.getChangeTime(firstStartTime);
         currentLifeTime = currentLifeTimeArray[0]+":"+currentLifeTimeArray[1]+":"+currentLifeTimeArray[2]+":"+currentLifeTimeArray[3];
 
@@ -435,16 +453,28 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
                 lifeTimeRecord = currentLifeTime;
                 infobox.setLifeTimeRecord(lifeTimeRecord);
                 Log.d("textbug", "record neu gesetzt");
+
+            }else{if(Integer.parseInt(currentLifeTimeSplit[i])<Integer.parseInt(currentRecordSplit[i])){
                 break;
             }
-        }
+        }}
         infobox.setCurrentLifeTime(currentLifeTime);
+
+        if((statusBarArrayList.get(0).getValue() == 0 && (statusBarArrayList.get(1).getValue() == 0 || statusBarArrayList.get(2).getValue() == 0)) || (statusBarArrayList.get(1).getValue() == 0 && statusBarArrayList.get(2).getValue() == 0)){
+
+
+                 died();
+        }
+
 
 
         if (player.getPlaying()) {
             room.update(BitmapFactory.decodeResource(getResources(), currentRoom,bitmapFactoryOptions));
             player.update();
         }
+
+
+
         if(state == GameState.STONEPAPER && stoneScissorPaperGame!= null){
 
             if((stoneScissorPaperGame.gameWon || stoneScissorPaperGame.gameLost)&& !currentWaitingProcess){
@@ -601,29 +631,15 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     public void draw(Canvas canvas) {
         super.draw(canvas);
 
-
-
-
         setCurrentBackground();
-
-
-        final float scaleFactorX = 1;
-        final float scaleFactorY = 1;
 
 
         if (canvas != null) {
             final int savedState = canvas.save();
 
-            //canvas.scale(scaleFactorX, scaleFactorY);
-
 
             room.draw(canvas);
-
-
-
-
             drawStatusBars(canvas);
-
 
             switch (state) {
                 case STONEPAPER:
@@ -673,6 +689,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
             }
             infobox.draw(canvas);
             roomScroll.draw(canvas);
+            if(isDead){
+                canvas.drawBitmap(deadOvo,0,0,null);
+            }
+
             canvas.restoreToCount(savedState);
         }
 
@@ -683,6 +703,32 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
             statusBarArrayList.get(i).draw(canvas);
         }
 
+
+
+    }
+
+    private void died()  {
+        if(!isDead){deadCounter = System.currentTimeMillis();}
+
+        isDead = true;
+        if( (System.currentTimeMillis() - deadCounter)/1000 > 5){
+            Log.d("deadtimer", "deadCounter: " +deadCounter+"  current: "+System.currentTimeMillis());
+            //repository.putIntoDb("timeRecord",lifeTimeRecord);
+            currentLifeTime = "0:0:0:0";
+            firstStartTime = timeStatusChanger.getCurrentDate();
+            statusBarArrayList.get(1).setValue(3);
+            fun = statusBarArrayList.get(1).getValue();
+            statusBarArrayList.get(1).update();
+            statusBarArrayList.get(0).setValue(3);
+            hygiene = statusBarArrayList.get(0).getValue();
+            statusBarArrayList.get(0).update();
+            statusBarArrayList.get(2).setValue(3);
+            foodSaturation = statusBarArrayList.get(2).getValue();
+            statusBarArrayList.get(2).update();
+            playRoomStart();
+            isDead = false;
+
+        }
 
 
     }

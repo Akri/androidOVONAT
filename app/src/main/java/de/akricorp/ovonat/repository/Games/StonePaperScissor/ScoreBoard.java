@@ -10,9 +10,7 @@ import android.graphics.Paint;
 import de.akricorp.ovonat.GameSettings;
 import de.akricorp.ovonat.R;
 
-/**
- * Created by Hännes on 26.09.2016.
- */
+
 
 public class ScoreBoard {
     private BitmapFactory.Options bitmapFactoryOptions = new BitmapFactory.Options();
@@ -70,8 +68,8 @@ public class ScoreBoard {
 
     public void draw(Canvas canvas){
         canvas.drawBitmap(backGround,x,y,null);
-        canvas.drawText("Winner with 20 Points ", x+(int)(5*resolutionControlFactorX), y+(int)(25*resolutionControlFactorY), headerTextOptions);
-        canvas.drawText("You: "+team1Score, x+(int)(20*resolutionControlFactorX), y+(int)(60*resolutionControlFactorY), scoreTextOptions);
+        canvas.drawText("Gewinne mit 20 Punkten ", x+(int)(5*resolutionControlFactorX), y+(int)(25*resolutionControlFactorY), headerTextOptions);
+        canvas.drawText("Du: "+team1Score, x+(int)(20*resolutionControlFactorX), y+(int)(60*resolutionControlFactorY), scoreTextOptions);
         canvas.drawText("Ovo: "+team2Score, x+(int)(170*resolutionControlFactorX), y+(int)(60*resolutionControlFactorY), scoreTextOptions);
     }
 }

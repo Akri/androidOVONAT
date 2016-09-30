@@ -25,6 +25,7 @@ public class MainThread extends Thread {
         super();
         this.surfaceHolder = surfaceHolder;
         this.gamePanel = gamePanel;
+
     }
 
     public void run(){
@@ -49,7 +50,7 @@ public class MainThread extends Thread {
                 canvas = this.surfaceHolder.lockCanvas();
                 synchronized (surfaceHolder){
 
-                    this.gamePanel.update();
+                    this.gamePanel.update(canvas);
 
                     this.gamePanel.draw(canvas);
 

@@ -108,7 +108,7 @@ public class ShowerGame  {
             dropList1Fall = true;
         }
         if(dropList1Fall) {
-            Log.d("drop","1 wird geupdated");
+            
             if (timer > 10) {
                 if (dropList1.get(0).getY() < 420 * resolutionControlFactorY) {
                     dropList1.get(0).updateY(10);
@@ -133,19 +133,19 @@ public class ShowerGame  {
                 dropList1Fall = false;
                 dropList1.clear();
                 dropList1Ready = true;
-                Log.d("drops","1fertig");
+
             }
         }}
-             Log.d("drops","list2 : " +dropList2+"  1rdy "+ dropList1Ready);
+
 
             if(dropList2.isEmpty()  && dropList1Ready){
-                Log.d("drops","2 wird erstellt");
+
                 dropList2Fall = true;
                 fillDropList(dropList2);
 
             }
             if(dropList2Fall) {
-                Log.d("drop", "2 wird geupdated");
+
                 if (timer > 150) {
                     if (dropList2.get(0).getY() < 420 * resolutionControlFactorY) {
                         dropList2.get(0).updateY(10);
@@ -235,7 +235,7 @@ public class ShowerGame  {
         }
 
         public void onSensorChanged(SensorEvent event) {
-            // Handle the events for which we registered
+
             switch (event.sensor.getType()) {
                 case Sensor.TYPE_ACCELEROMETER:
                     System.arraycopy(event.values, 0, mValuesAccel, 0, 3);

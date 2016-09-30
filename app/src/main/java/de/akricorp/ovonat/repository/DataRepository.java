@@ -219,7 +219,7 @@ public class DataRepository {
             case "fun":
                 cv.put(KEY_FUN, newValue);
                 return db.update(DATABASE_TABLE, cv, null, null);
-            case "lifeTime":
+            case "timeRecord":
                 cv.put(KEY_LIFE_TIME_RECORD, newValue);
                 return db.update(DATABASE_TABLE,cv,null,null);
         }
