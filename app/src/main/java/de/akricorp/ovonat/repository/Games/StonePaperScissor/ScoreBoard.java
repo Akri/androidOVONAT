@@ -44,7 +44,7 @@ public class ScoreBoard {
         scoreTextOptions.setColor(Color.BLACK);
         scoreTextOptions.setTextSize(20 * resolutionControlFactorX);
         headerTextOptions.setColor(Color.YELLOW);
-        headerTextOptions.setTextSize(25 * resolutionControlFactorX);
+        headerTextOptions.setTextSize(22 * resolutionControlFactorX);
 
     }
 
